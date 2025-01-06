@@ -136,12 +136,13 @@ public class AuthServiceImpl implements AuthService {
 		verificationRepository.save(verificationCode);
 		
 		String subject = "Prime Games Store: OTP for Login/Register";
-		String text = "Dear User,\n\n" +
-		              "Your OTP for logging in or registering is:\n\n" +
-		              "  " + otp + "\n\n" +
-		              "If you didn’t request this, please ignore this message.\n\n" +
-		              "Best regards,\n" +
-		              "Prime Games Store Team";
+		String text = "Dear User,<br><br>" +
+              "Your OTP for logging in or registering is:<br><br>" +
+              "<span style=\"font-size: 24px; font-weight: bold;\">" + otp + "</span><br><br>" +
+              "If you didn’t request this, please ignore this message.<br><br>" +
+              "Best regards,<br>" +
+              "Prime Games Store Team";
+
 
 		
 		emailService.sendVerificationOtpEmail(email, otp, subject, text);
