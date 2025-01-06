@@ -49,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("sellers")
+@RequestMapping("/sellers")
 public class SellerController {
 	
 	@Autowired
@@ -170,7 +170,7 @@ public class SellerController {
 	    // Set up email parameters
 	    String subject = "Prime Games Hub || Email Verification Code";
 	    String text = "Welcome to Prime Games Hub! Please verify your account using this link: ";
-	    String frontendUrls = "https://prime-game-store-backend.onrender.com/verify-seller";  // Frontend URL for email verification
+	    String frontendUrls = "http://localhost:3000/verify-seller";  // Frontend URL for email verification
 	    
 	    // Append the verification URL to the email body
 	    text += frontendUrls + "?otp=" + otpString;  // Add the OTP as a query parameter for verification

@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/seller/revenue/chart")
+@RequestMapping("/api/seller/revenue/chart")
 public class RevenueController {
     private final RevenueService revenueService;
     private final SellerService sellerService;

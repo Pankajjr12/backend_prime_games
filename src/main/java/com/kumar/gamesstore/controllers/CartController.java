@@ -28,7 +28,7 @@ import com.kumar.gamesstore.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/cart")
+@RequestMapping("/api/cart")
 @RequiredArgsConstructor
 public class CartController {
 	

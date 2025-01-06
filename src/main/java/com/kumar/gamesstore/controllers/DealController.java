@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("admin/deals")
+@RequestMapping("/admin/deals")
 public class DealController {
     private final DealService dealService;
 

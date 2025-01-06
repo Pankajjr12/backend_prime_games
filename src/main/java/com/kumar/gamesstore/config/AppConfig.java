@@ -43,11 +43,8 @@ public class AppConfig {
 						
 						cfg.setAllowedOrigins(Arrays.asList(
 								
-								"http://localhost:3000", 
-								"http://localhost:4000",
-								"http://localhost:4200",
-								"https://frontend-prime-games.vercel.app/",
-								"https://frontend-prime-games-git-main-pankaj-kumars-projects-4bc655b1.vercel.app/"
+								"https://frontend-prime-games.vercel.app",
+								"https://frontend-prime-games-git-main-pankaj-kumars-projects-4bc655b1.vercel.app"
 							)
 						);
 						//cfg.setAllowedMethods(Arrays.asList("GET", "POST","DELETE","PUT"));

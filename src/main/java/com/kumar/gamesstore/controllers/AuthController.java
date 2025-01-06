@@ -17,7 +17,7 @@ import com.kumar.gamesstore.responses.AuthResponse;
 import com.kumar.gamesstore.services.AuthService;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthController {
 	
 	@Autowired

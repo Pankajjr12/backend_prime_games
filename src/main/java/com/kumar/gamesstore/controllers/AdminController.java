@@ -20,7 +20,7 @@ import com.kumar.gamesstore.services.SellerService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 

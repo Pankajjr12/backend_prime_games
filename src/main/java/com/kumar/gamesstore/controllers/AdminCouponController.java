@@ -23,7 +23,7 @@ import com.kumar.gamesstore.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/coupons")
+@RequestMapping("/api/coupons")
 @RequiredArgsConstructor
 public class AdminCouponController {
 

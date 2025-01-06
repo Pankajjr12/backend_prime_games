@@ -41,7 +41,7 @@ public class PaymentController {
 	 private final CartRepository cartRepository;
 	 private final CartItemRepository cartItemRepository;
 	 
-	  @PostMapping("api/payment/{paymentMethod}/order/{orderId}")
+	  @PostMapping("/api/payment/{paymentMethod}/order/{orderId}")
 	    public ResponseEntity<PaymentLinkResponse> paymentHandler(
 	            @PathVariable PaymentMethod paymentMethod,
 	            @PathVariable Long orderId,
@@ -70,7 +70,7 @@ public class PaymentController {
 	 
 	  
 	  
-	  @GetMapping("api/payment/{paymentId}")
+	  @GetMapping("/api/payment/{paymentId}")
 	    public ResponseEntity<ApiResponse> paymentSuccessHandler(
 	            @PathVariable String paymentId,
 	            @RequestParam String paymentLinkId,
