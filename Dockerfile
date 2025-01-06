@@ -1,30 +1,30 @@
-# Use the Maven image to build the Spring Boot app
-FROM maven:3.8.6-openjdk-17 AS build
+# Use OpenJDK 17 as the base image
+FROM openjdk:17-slim AS build
+
+# Install Maven
+RUN apt-get update && apt-get install -y maven
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the pom.xml and download dependencies (optional step for faster rebuilds)
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy the source code to the container
+# Copy the pom.xml and source code to the working directory
+COPY pom.xml /app
 COPY src /app/src
 
-# Build the Spring Boot app (create the JAR file)
+# Build the Spring Boot application
 RUN mvn clean package -DskipTests
 
-# Use a smaller base image for the runtime environment (JRE)
-FROM openjdk:17-jdk-slim
+# Use a smaller image to run the app
+FROM openjdk:17-slim
 
-# Set the working directory for runtime
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the JAR file from the build stage
+# Copy the jar file from the build image
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose the port the app will run on
 EXPOSE 8080
 
-# Command to run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Command to run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "app.jar"]
