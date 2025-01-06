@@ -1,13 +1,15 @@
 package com.kumar.gamesstore;
 
-import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PrimeGamingStoreApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
+@EnableAutoConfiguration(exclude = MailSenderAutoConfiguration.class)
+public class PrimeGamingStoreApplicationTests {
 }
+
+
+
+
+

@@ -1,15 +1,12 @@
 # Use the Maven image to build the Spring Boot app
-FROM maven:3.8.5-jdk-17 AS build
+# FROM openjdk-17 AS build
 
-COPY . .
+# # Expose the port the app will run on
+# EXPOSE 8080
 
-RUN mvn clean package -DskipTests
+# # Copy the JAR file from the build stage
+# ADD prime-gaming-store/target/spring-boot-docker.jar /spring-boot-docker.jar
 
-FROM openjdk:17.0.1-jdk-slim
 
-COPY --from=build /target/demo-0.0.1-SNAPSHOT.jar demo.jar
-
-EXPOSE 8080
-
-ENTRYPOINT [ "java","-jar","demo.jar" ]
-
+# # Command to run the Spring Boot app
+# ENTRYPOINT ["java", "-jar", "/spring-boot-docker.jar"]
