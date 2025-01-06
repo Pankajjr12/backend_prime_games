@@ -20,7 +20,7 @@ import com.kumar.gamesstore.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
 

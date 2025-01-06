@@ -24,14 +24,14 @@ public class HomeCategoryController {
 	   private final HomeCategoryService homeCategoryService;
 	    private final HomeService homeService;
 
-	    @GetMapping("/home-page")
+	    @GetMapping("home-page")
 	    public ResponseEntity<Home> getHomePageData() {
 	        Home homePageData = homeService.getHomePageData();
 	        return new ResponseEntity<>(homePageData, HttpStatus.ACCEPTED);
 	 
 	    }
 
-	    @PostMapping("/home/categories")
+	    @PostMapping("home/categories")
 	    public ResponseEntity<Home> createHomeCategories(
 	            @RequestBody List<HomeCategory> homeCategories
 	    ) {
@@ -41,7 +41,7 @@ public class HomeCategoryController {
 	    }
 
 	    
-	    @GetMapping("/home-category")
+	    @GetMapping("home-category")
 	    public ResponseEntity<List<HomeCategory>> getHomeCategory(
 	          ) throws Exception {
 

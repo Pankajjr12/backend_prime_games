@@ -12,7 +12,7 @@ import com.kumar.gamesstore.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("api/users")
 @RequiredArgsConstructor
 public class UserController {
 	

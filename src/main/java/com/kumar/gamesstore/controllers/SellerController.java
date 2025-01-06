@@ -49,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/sellers")
+@RequestMapping("sellers")
 public class SellerController {
 	
 	@Autowired
