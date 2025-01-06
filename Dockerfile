@@ -1,5 +1,5 @@
 # Use the Maven image to build the Spring Boot app
-FROM maven:3.8.6-openjdk-17 AS build
+FROM maven:3.9.0-jdk-17 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
