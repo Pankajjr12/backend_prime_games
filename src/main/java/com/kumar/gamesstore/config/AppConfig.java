@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,57 +15,51 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-import jakarta.servlet.http.HttpServletRequest;
-
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
 
+    // Security filter chain with CORS and JWT token validation
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(Authorize -> Authorize
-//                		.requestMatchers("/api/admin/**").hasAnyRole("SHOP_OWNER","ADMIN")
-                                .requestMatchers("/api/**").authenticated()
-                                .requestMatchers("/api/products/*/reviews").permitAll()
-                                .anyRequest().permitAll()
-                )
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-               
-		
-		return http.build();
-		
-	}
-	
-    // CORS Configuration
-    private CorsConfigurationSource corsConfigurationSource() {
-        return new CorsConfigurationSource() {
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app",
-                        "http://localhost:3000"));
-                cfg.setAllowedMethods(Collections.singletonList("*"));
-                cfg.setAllowCredentials(true);
-                cfg.setAllowedHeaders(Collections.singletonList("*"));
-                cfg.setExposedHeaders(Arrays.asList("Authorization"));
-                cfg.setMaxAge(3600L);
-                return cfg;
-            }
-        };
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeRequests(auth -> auth
+                .requestMatchers("/api/**").authenticated()  // All API endpoints need authentication
+                .requestMatchers("/api/products/*/reviews").permitAll()  // Public reviews
+                .anyRequest().permitAll()  // Allow other requests (can be adjusted as per your needs)
+            )
+            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)  // JWT Token filter
+            .csrf(csrf -> csrf.disable())  // Disable CSRF for stateless applications
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // Apply custom CORS configuration
+        
+        return http.build();
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    // Custom CORS configuration
+    private CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration cfg = new CorsConfiguration();
+        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000"));  // Allowed frontend URLs
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods
+        cfg.setAllowCredentials(true);  // Allow credentials (cookies, Authorization headers)
+        cfg.setAllowedHeaders(Collections.singletonList("*"));  // Allow all headers
+        cfg.setExposedHeaders(Arrays.asList("Authorization"));  // Expose Authorization header
+        cfg.setMaxAge(3600L);  // Cache pre-flight response for 1 hour
 
+        // Register the CORS configuration for all paths
+        source.registerCorsConfiguration("/**", cfg);
+        return source;
+    }
+
+    // Password encoder bean (e.g., for BCrypt)
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // RestTemplate bean (if you need to call other services)
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
