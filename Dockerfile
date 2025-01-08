@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=build /app/target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
 
 # Expose port 8080 for the application
-EXPOSE 8080
+EXPOSE 5353
 
 # Define the entry point to run the Spring Boot application using Java
 ENTRYPOINT ["java", "-jar", "prime-Gaming-store.jar"]
