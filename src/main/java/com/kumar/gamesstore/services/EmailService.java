@@ -16,26 +16,26 @@ public class EmailService {
 
 	private final JavaMailSender javaMailSender;
 	
-	public void sendVerificationOtpEmail(String userEmail,String otp,String subject,String text) throws MessagingException {
-		
+	public void sendVerificationOtpEmail(String userEmail, String otp, String subject, String text, boolean isHtml) throws MessagingException {
 		try {
 			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,"utf-8");
-			
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+	
+			// Set the subject of the email
 			helper.setSubject(subject);
-			helper.setText(text);
+			// Use the 'isHtml' flag to indicate whether the email body is HTML
+			helper.setText(text, isHtml);  // Set 'isHtml' flag to true if content is HTML
 			helper.setTo(userEmail);
-			
+	
+			// Send the email
 			javaMailSender.send(mimeMessage);
-			
-			
+	
+		} catch (MailException e) {
+			// Log the error for debugging
+			System.out.println("Error sending email: " + e.getMessage());
+			// Throw a custom exception if necessary
+			throw new MailSendException("Failed to send email");
 		}
-		
-		catch(MailException e) {
-			System.out.println("errrrrrrror"+e);
-			throw new MailSendException("failed to send mail");
-		}
-		
-		
 	}
 }
+	

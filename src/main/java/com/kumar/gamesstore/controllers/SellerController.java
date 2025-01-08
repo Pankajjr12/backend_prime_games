@@ -89,7 +89,7 @@ public class SellerController {
 	        String subject = "Prime Game Store";
 	        String text = "your login otp is - ";
 	        text += "otp=" + otp;
-	        emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text);
+	        emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text,true);
 
 	        ApiResponse res = new ApiResponse();
 	        res.setMessage("otp sent");
@@ -176,7 +176,7 @@ public class SellerController {
 	    text += frontendUrls + "?otp=" + otpString;  // Add the OTP as a query parameter for verification
 	    
 	    // Send the email with the correct recipient
-	    emailService.sendVerificationOtpEmail(seller.getEmail(),verificationCode.getOtp(), subject, text);
+	    emailService.sendVerificationOtpEmail(seller.getEmail(),verificationCode.getOtp(), subject, text,true);
 	    
 	    // Return the created seller as the response
 	    return new ResponseEntity<>(savedUser, HttpStatus.CREATED);

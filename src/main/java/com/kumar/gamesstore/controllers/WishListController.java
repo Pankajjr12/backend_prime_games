@@ -22,7 +22,7 @@ import com.kumar.gamesstore.services.WishlistService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/zapi/wishlist")
+@RequestMapping("/api/wishlist")
 @RequiredArgsConstructor
 public class WishListController {
 

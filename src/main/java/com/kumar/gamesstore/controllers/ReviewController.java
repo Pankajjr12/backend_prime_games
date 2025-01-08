@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/zapi")
+@RequestMapping("/api")
 public class ReviewController {
 	
     private final ReviewService reviewService;

@@ -145,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 		
-		emailService.sendVerificationOtpEmail(email, otp, subject, text);
+			  emailService.sendVerificationOtpEmail(email, otp, subject, text, true);
 	}
 
 	@Override

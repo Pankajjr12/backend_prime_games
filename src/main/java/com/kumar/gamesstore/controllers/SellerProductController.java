@@ -25,7 +25,7 @@ import com.kumar.gamesstore.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/zzsellers/product")
+@RequestMapping("/sellers/product")
 @RequiredArgsConstructor
 public class SellerProductController {
 
