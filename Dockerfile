@@ -1,31 +1,14 @@
-# Use the Maven image to build the Spring Boot app
-FROM maven:3.8.6-openjdk-17-slim AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
-# Set the working directory inside the container
-WORKDIR /app
+COPY . .
 
-# Copy the pom.xml and download dependencies (optional step for faster rebuilds)
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy the source code to the container
-COPY src /app/src
-
-# Build the Spring Boot app (create the JAR file)
 RUN mvn clean package -DskipTests
 
-# Use a smaller base image for the runtime environment (JRE)
-FROM openjdk:17-jdk-slim
+FROM openjdk:17.0.1-jdk-slim
 
-# Set the working directory for runtime
-WORKDIR /app
+COPY --from=build /target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
 
-# Copy the JAR file from the build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Expose the port the app will run on
 EXPOSE 8080
+ENTRYPOINT ["java","-jar","prime-Gaming-store.jar"]
 
-# Command to run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
