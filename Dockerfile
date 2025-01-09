@@ -10,6 +10,9 @@ COPY . .
 # Run Maven to build the project and create the jar file (skip tests)
 RUN mvn clean package -DskipTests
 
+# Debugging: List contents of /app/target directory
+RUN ls /app/target
+
 # Step 2: Create a smaller image for running the application using OpenJDK 17
 FROM openjdk:17.0.1-jdk-slim
 
