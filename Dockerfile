@@ -5,7 +5,8 @@ FROM openjdk:17-jdk-slim as build
 WORKDIR /app
 
 # Copy the jar file from the host machine into the container
-COPY /target/*.jar prime-Gaming-store.jar
+COPY ../target/*.jar prime-Gaming-store.jar
+
 
 # Expose the port the application will run on
 EXPOSE 8080
