@@ -38,17 +38,18 @@ public class PaymentServiceImpl implements PaymentService{
 	    
 	 private final CartRepository cartRepository;
 	 
-	 @Value("${stripe.api.key}")
-	 private String stripeApiKey;
-	 
-	 @Value("${stripe.secret.key}")
-	 private String stripeSecretKey;
-
-	 @Value("${razorpay.api.key}")
-	 private String apiKey;
-
-	 @Value("${razorpay.api.secret}")
-	 private String apiSecret;
+     @Value("${stripe.api.key}")
+     private String stripeApiKey;
+     
+     @Value("${stripe.secret.key}")
+     private String stripeSecretKey;
+     
+     @Value("${razorpay.api.key}")
+     private String apiKey;
+     
+     @Value("${razorpay.api.secret}")
+     private String apiSecret;
+     
 			 
 	
 	@Override

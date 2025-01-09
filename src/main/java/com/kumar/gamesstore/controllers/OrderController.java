@@ -3,6 +3,8 @@ package com.kumar.gamesstore.controllers;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,8 +54,12 @@ public class OrderController {
 	private final SellerReportService sellerReportService;
 	private final CartService cartService;
 	private final PaymentOrderRepository paymentOrderRepository;
-	
+
+	@Autowired
+	@Lazy
 	private final PaymentService paymentService;
+
+	
 	
 	
 	@PostMapping()

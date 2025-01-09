@@ -1,26 +1,30 @@
-# Step 1: Build the project using Maven and OpenJDK 17
-FROM maven:3.8.5-openjdk-17 AS build
+# Step 1: Use an official OpenJDK image as the base image
+FROM openjdk:17-jdk-slim as build
 
-# Set the working directory inside the container to /app
+# Step 2: Set the working directory in the container
 WORKDIR /app
 
-# Copy the entire project to the /app directory in the container
-COPY . .
+# Step 3: Copy the pom.xml and the source code
+COPY pom.xml .
+COPY src ./src
 
-# Run Maven to build the project and create the jar file (skip tests)
-RUN mvn clean package -DskipTests
+# Step 4: Ensure the Maven wrapper is executable
+RUN chmod +x ./mvnw
 
-# Step 2: Create a smaller image for running the application using OpenJDK 17
-FROM openjdk:17.0.1-jdk-slim
+# Step 5: Run Maven to build the application (skip tests to speed up the build)
+RUN ./mvnw clean package -DskipTests
 
-# Set the working directory in the second stage container
-WORKDIR /app
+# Step 6: List the contents of the target directory for debugging
+RUN ls -la /app/target/
 
-# Copy the JAR file from the first stage (from /target) to the second stage (into /app)
-COPY --from=build /app/target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
+# Step 7: Use a smaller image for running the application
+FROM openjdk:17-jdk-slim
 
-# Expose port 8080 for the application
+# Step 8: Copy the built JAR file from the previous step
+COPY --from=build /app/target/prime-Gaming-store-0.0.1-SNAPSHOT.jar /prime-Gaming-store.jar
+
+# Step 9: Expose the port that Spring Boot will run on
 EXPOSE 8080
 
-# Define the entry point to run the Spring Boot application using Java
-ENTRYPOINT ["java", "-jar", "prime-Gaming-store.jar"]
+# Step 10: Run the application
+ENTRYPOINT ["java", "-jar", "/prime-Gaming-store.jar"]
