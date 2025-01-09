@@ -7,9 +7,10 @@ WORKDIR /app
 # Step 3: Copy the pom.xml and the source code
 COPY pom.xml .
 COPY src ./src
+COPY mvnw .    # Ensure the mvnw script is copied
 
-# Step 4: Run Maven to build the application (skip tests to speed up the build)
-RUN ./mvnw clean package -DskipTests
+# Step 4: Make the mvnw script executable and run Maven to build the application
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 # Step 5: Use a smaller image for running the application
 FROM openjdk:17-jdk-slim
