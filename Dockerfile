@@ -1,17 +1,14 @@
-FROM openjdk:17-oracle
-WORKDIR /app/
-ARG VERSION=0.0.1-SNAPSHOT
-WORKDIR /build/
-COPY pom.xml /build/
-COPY src /build/src/
+# Use an official OpenJDK image as the base image
+FROM openjdk:17-jdk-slim as build
 
-RUN mvn clean package 
-COPY target/booting-web-${VERSION}.jar target/application.jar
+# Set the working directory inside the container
+WORKDIR /app
 
+# Copy the .jar file from the host machine into the container
+COPY target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
 
-FROM openjdk:17-oracle
-WORKDIR /app/
+# Expose the port the application will run on
+EXPOSE 8080
 
-COPY --from=BUILDER /build/target/application.jar /app/
-
-CMD java -jar /app/application.jar
+# Command to run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "/app/prime-Gaming-store.jar"]
