@@ -139,7 +139,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>spring-prime-app</finalName>
+        <finalName>springprimeapp</finalName>
     </build>
 
 </project>
