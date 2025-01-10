@@ -1,14 +1,14 @@
-FROM maven:3.8.4-openjdk-17 as maven-builder
-COPY src /app/src
-COPY pom.xml /app
+# Use an official OpenJDK image as the base image
+FROM openjdk:17-jdk-slim as build
 
-RUN mvn -f /app/pom.xml clean package -DskipTests
-FROM openjdk:17-alpine
+# Set the working directory inside the container
+WORKDIR /app
 
-RUN "ls"
+# Copy the .jar file from the host machine into the container
+COPY target/*.jar prime-Gaming-store.jar
 
-COPY --from=maven-builder target/*.jar /app-service/godelivery.jar
-WORKDIR /app-service
-
+# Expose the port the application will run on
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","godelivery.jar"]
+
+# Command to run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "/app/prime-Gaming-store.jar"]
