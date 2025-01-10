@@ -2,7 +2,6 @@
 FROM openjdk:17-jdk-slim as build
 
 # Set the working directory inside the container
-WORKDIR /app
 
 # Copy the .jar file from the host machine into the container
 COPY target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
@@ -11,4 +10,4 @@ COPY target/prime-Gaming-store-0.0.1-SNAPSHOT.jar prime-Gaming-store.jar
 EXPOSE 8080
 
 # Command to run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app/prime-Gaming-store.jar"]
+ENTRYPOINT ["java", "-jar", "/prime-Gaming-store.jar"]
