@@ -1,5 +1,6 @@
 # Use an official OpenJDK runtime as a parent image
-FROM java:8
+FROM openjdk:8-jdk-alpine
+
 
 EXPOSE 8080
 # Copy the jar file from the local machine to the container
