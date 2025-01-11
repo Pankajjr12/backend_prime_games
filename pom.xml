@@ -161,7 +161,7 @@
             </configuration>
         </plugin>
     </plugins>
-    <finalName>springprimeapp</finalName>
+    <finalName>godelivery</finalName>
 </build>
 
 
