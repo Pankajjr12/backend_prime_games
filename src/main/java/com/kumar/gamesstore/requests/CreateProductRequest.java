@@ -27,5 +27,5 @@ public class CreateProductRequest {
 	private String category3;
 	
 	private String years;
-	
+	private String platform;
 }

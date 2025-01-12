@@ -44,6 +44,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
@@ -124,45 +129,45 @@
 
     </dependencies>
 
-  <build>
-    <plugins>
-        <!-- Spring Boot Maven Plugin -->
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-                <excludes>
-                    <exclude>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                    </exclude>
-                </excludes>
-            </configuration>
-        </plugin>
+    <build>
+        <plugins>
+            <!-- Spring Boot Maven Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
 
-        <!-- Docker Maven Plugin -->
-        <plugin>
-            <groupId>com.spotify</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <version>1.1.0</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>build</goal>
-                        <goal>push</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <!-- Specify the Docker image name -->
-                <imageName>pankajjr12/backend-prime-games</imageName>
-                <dockerfileDirectory>${project.basedir}</dockerfileDirectory>  <!-- Path to Dockerfile -->
-                <tag>${project.version}</tag>  <!-- Tag the image with your project version -->
-            </configuration>
-        </plugin>
-    </plugins>
-    <finalName>godelivery</finalName>
-</build>
+            <!-- Docker Maven Plugin -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Specify the Docker image name -->
+                    <imageName>pankajjr12/backend-prime-games</imageName>
+                    <dockerfileDirectory>${project.basedir}</dockerfileDirectory>  <!-- Path to Dockerfile -->
+                    <tag>${project.version}</tag>  <!-- Tag the image with your project version -->
+                </configuration>
+            </plugin>
+        </plugins>
+        <finalName>godelivery</finalName>
+    </build>
 
 
 </project>
