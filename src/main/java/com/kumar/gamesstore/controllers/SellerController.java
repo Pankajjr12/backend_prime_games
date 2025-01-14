@@ -51,55 +51,53 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/sellers")
 public class SellerController {
-	
-	@Autowired
-	private final AuthService authService;
-	
-	@Autowired
-	private final SellerService sellerService;
-	
-	@Autowired
-	private final VerificationService verificationService;
-	
-	@Autowired
-	private final EmailService emailService;
-	
-	@Autowired
-	private JwtProvider jwtProvider;
-	
-	@Autowired
-	private final CustomUserServiceImpl customeUserServiceImplementation;
-	
-	
-	private SellerReportService sellerReportService;
-	
-	@Autowired
-	private final VerificationRepository verificationRepository;
-	
-	@Autowired
-	private final SellerRepository sellerRepository;
-	
-	@PostMapping("/sent/login-top")
-	public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req) throws Exception {
-		 Seller seller = sellerService.getSellerByEmail(req.getEmail());
 
-	        String otp = OtpUtils.generateOtp();
-	        VerificationCode verificationCode = verificationService.createVerificationCode(otp, req.getEmail());
+    @Autowired
+    private final AuthService authService;
 
-	        String subject = "Prime Game Store";
-	        String text = "your login otp is - ";
-	        text += "otp=" + otp;
-	        emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text,true);
+    @Autowired
+    private final SellerService sellerService;
 
-	        ApiResponse res = new ApiResponse();
-	        res.setMessage("otp sent");
-	        return new ResponseEntity<>(res, HttpStatus.CREATED);
-	}
-	
-	@PostMapping("/verify/login-top")
-    public ResponseEntity<AuthResponse> verifyLoginOtp(@RequestBody VerificationCode req) throws  SellerException {
+    @Autowired
+    private final VerificationService verificationService;
+
+    @Autowired
+    private final EmailService emailService;
+
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    @Autowired
+    private final CustomUserServiceImpl customeUserServiceImplementation;
+
+    private SellerReportService sellerReportService;
+
+    @Autowired
+    private final VerificationRepository verificationRepository;
+
+    @Autowired
+    private final SellerRepository sellerRepository;
+
+    @PostMapping("/sent/login-top")
+    public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req) throws Exception {
+        Seller seller = sellerService.getSellerByEmail(req.getEmail());
+
+        String otp = OtpUtils.generateOtp();
+        VerificationCode verificationCode = verificationService.createVerificationCode(otp, req.getEmail());
+
+        String subject = "Prime Game Store";
+        String text = "your login otp is - ";
+        text += "otp=" + otp;
+        emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text, true);
+
+        ApiResponse res = new ApiResponse();
+        res.setMessage("otp sent");
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/verify/login-top")
+    public ResponseEntity<AuthResponse> verifyLoginOtp(@RequestBody VerificationCode req) throws SellerException {
 //        Seller savedSeller = sellerService.createSeller(seller);
-
 
         String otp = req.getOtp();
         String email = req.getEmail();
@@ -119,9 +117,7 @@ public class SellerController {
         authResponse.setJwt(token);
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-
         String roleName = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
-
 
         authResponse.setRole(UserRole.valueOf(roleName));
 
@@ -140,73 +136,70 @@ public class SellerController {
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
-	
-	@PatchMapping("/verify/{otp}")
-	public ResponseEntity<Seller> verifySellerEmail(@PathVariable String otp) throws Exception{
-		
-		VerificationCode verificationCode = verificationRepository.findByOtp(otp);
-		if(verificationCode == null && !verificationCode.getOtp().equals(otp)) {
-			throw new Exception("wrong otp..");		
-			}
-		
-		Seller seller = sellerService.verifyEmail(verificationCode.getEmail(), otp);
-		
-		return new ResponseEntity<>(seller,HttpStatus.OK);
-	}
-	
-	@PostMapping()
-	public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) throws Exception {
-	    // Create and save the new seller
-	    Seller savedUser = sellerService.createSeller(seller);
-	    
-	    // Generate OTP and save the verification code
-	    String otpString = OtpUtils.generateOtp();
-	    VerificationCode verificationCode = new VerificationCode();
-	    verificationCode.setOtp(otpString);
-	    verificationCode.setEmail(seller.getEmail());
-	    
-	    verificationRepository.save(verificationCode);  
-	    
-	    // Set up email parameters
-	    String subject = "Prime Games Hub || Email Verification Code";
-	    String text = "Welcome to Prime Games Hub! Please verify your account using this link: ";
-	    String frontendUrls = "http://localhost:3000/verify-seller";  // Frontend URL for email verification
-	    
-	    // Append the verification URL to the email body
-	    text += frontendUrls + "?otp=" + otpString;  // Add the OTP as a query parameter for verification
-	    
-	    // Send the email with the correct recipient
-	    emailService.sendVerificationOtpEmail(seller.getEmail(),verificationCode.getOtp(), subject, text,true);
-	    
-	    // Return the created seller as the response
-	    return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
-	}
- 
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException{
-		
-		Seller seller = sellerService.getSellerById(id);
-		return new ResponseEntity<>(seller,HttpStatus.OK);
-	}
 
-	@GetMapping("/profile")
-	public ResponseEntity<Seller> getSellerByJwt(@RequestHeader("Authorization") String jwt) throws Exception{
-		
-		String email = jwtProvider.getEmailFromJwtToken(jwt);
-		Seller seller = sellerService.getSellerByEmail(email);
-		
-		return new ResponseEntity<>(seller,HttpStatus.OK);
-	}
-	
+    @PatchMapping("/verify/{otp}")
+    public ResponseEntity<Seller> verifySellerEmail(@PathVariable String otp) throws Exception {
 
-	
-	@GetMapping("")
-	public ResponseEntity<List<Seller>> getAllSellers(@RequestParam(required = false) AccountStatus status){
-		List<Seller> sellers = sellerService.getAllSellers(status);
-		return ResponseEntity.ok(sellers);
-	}
-	
+        VerificationCode verificationCode = verificationRepository.findByOtp(otp);
+        if (verificationCode == null && !verificationCode.getOtp().equals(otp)) {
+            throw new Exception("wrong otp..");
+        }
+
+        Seller seller = sellerService.verifyEmail(verificationCode.getEmail(), otp);
+
+        return new ResponseEntity<>(seller, HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) throws Exception {
+        // Create and save the new seller
+        Seller savedUser = sellerService.createSeller(seller);
+
+        // Generate OTP and save the verification code
+        String otpString = OtpUtils.generateOtp();
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setOtp(otpString);
+        verificationCode.setEmail(seller.getEmail());
+
+        verificationRepository.save(verificationCode);
+
+        // Set up email parameters
+        String subject = "Prime Games Hub || Email Verification Code";
+        String text = "Welcome to Prime Games Hub! Please verify your account using this link: ";
+        String frontendUrls = "http://localhost:3000/verify-seller";  // Frontend URL for email verification
+
+        // Append the verification URL to the email body
+        text += frontendUrls + "?otp=" + otpString;  // Add the OTP as a query parameter for verification
+
+        // Send the email with the correct recipient
+        emailService.sendVerificationOtpEmail(seller.getEmail(), verificationCode.getOtp(), subject, text, true);
+
+        // Return the created seller as the response
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException {
+
+        Seller seller = sellerService.getSellerById(id);
+        return new ResponseEntity<>(seller, HttpStatus.OK);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<Seller> getSellerByJwt(@RequestHeader("Authorization") String jwt) throws Exception {
+
+        String email = jwtProvider.getEmailFromJwtToken(jwt);
+        Seller seller = sellerService.getSellerByEmail(email);
+
+        return new ResponseEntity<>(seller, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Seller>> getAllSellers(@RequestParam(required = false) AccountStatus status) {
+        List<Seller> sellers = sellerService.getAllSellers(status);
+        return ResponseEntity.ok(sellers);
+    }
+
     @GetMapping("/report")
     public ResponseEntity<SellerReport> getSellerReport(
             @RequestHeader("Authorization") String jwt) throws SellerException {
@@ -219,21 +212,20 @@ public class SellerController {
         SellerReport report = sellerReportService.getSellerReport(seller);
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
-    
-	
-	@PatchMapping("/profile")
-	public ResponseEntity<Seller> updateSeller(@RequestHeader("Authorization") String jwt,@RequestBody Seller seller) throws Exception{
-		
-		Seller profile = sellerService.getSellerProfile(jwt);
-		Seller updateSeller = sellerService.updateSeller(profile.getId(), seller);
-		return ResponseEntity.ok(updateSeller);
-		
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteSeller(@PathVariable Long id) throws Exception {
-		sellerService.deleteSeller(id);
-		return ResponseEntity.noContent().build();
-	}
-	
+
+    @PatchMapping("/profile")
+    public ResponseEntity<Seller> updateSeller(@RequestHeader("Authorization") String jwt, @RequestBody Seller seller) throws Exception {
+
+        Seller profile = sellerService.getSellerProfile(jwt);
+        Seller updateSeller = sellerService.updateSeller(profile.getId(), seller);
+        return ResponseEntity.ok(updateSeller);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSeller(@PathVariable Long id) throws Exception {
+        sellerService.deleteSeller(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
