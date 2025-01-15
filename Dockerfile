@@ -8,7 +8,7 @@ FROM openjdk:17-alpine
 RUN "ls"
 
 COPY --from=maven-builder target/*.jar godelivery.jar
-WORKDIR /app-service
+
 
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","godelivery.jar"]
