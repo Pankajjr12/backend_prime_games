@@ -11,5 +11,4 @@ public class PrimeGamingStoreApplication {
     public static void main(String[] args) {
         SpringApplication.run(PrimeGamingStoreApplication.class, args);
     }
-
 }

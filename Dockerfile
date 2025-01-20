@@ -14,5 +14,5 @@ WORKDIR /app
 # Copy the JAR file from the build stage
 COPY --from=maven-builder /app/target/*.jar godelivery.jar
 
-EXPOSE 8080
+EXPOSE 4444
 ENTRYPOINT ["java", "-jar", "godelivery.jar"]
