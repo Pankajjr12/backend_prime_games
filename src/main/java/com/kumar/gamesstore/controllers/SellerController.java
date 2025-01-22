@@ -166,7 +166,7 @@ public class SellerController {
         // Set up email parameters
         String subject = "Prime Games Hub || Email Verification Code";
         String text = "Welcome to Prime Games Hub! Please verify your account using this link: ";
-        String frontendUrls = "http://localhost:3000/verify-seller";  // Frontend URL for email verification
+        String frontendUrls = "https://frontend-prime-games.vercel.app/verify-seller";  // Frontend URL for email verification
 
         // Append the verification URL to the email body
         text += frontendUrls + "?otp=" + otpString;  // Add the OTP as a query parameter for verification
