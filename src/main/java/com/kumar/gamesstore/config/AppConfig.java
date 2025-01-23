@@ -25,15 +25,15 @@ public class AppConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeRequests(auth -> auth
-                .requestMatchers("/api/**").authenticated()  // All API endpoints need authentication
-                .requestMatchers("/api/products/*/reviews").permitAll()  // Public reviews
-                .anyRequest().permitAll()  // Allow other requests (can be adjusted as per your needs)
-            )
-            .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)  // JWT Token filter
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for stateless applications
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // Apply custom CORS configuration
-        
+                .authorizeRequests(auth -> auth
+                .requestMatchers("/api/**").authenticated() // All API endpoints need authentication
+                .requestMatchers("/api/products/*/reviews").permitAll() // Public reviews
+                .anyRequest().permitAll() // Allow other requests (can be adjusted as per your needs)
+                )
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class) // JWT Token filter
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless applications
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // Apply custom CORS configuration
+
         return http.build();
     }
 
@@ -41,7 +41,7 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000"));  // Allowed frontend URLs
+        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000", "https://backend-prime-games.onrender.com"));  // Allowed frontend URLs
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods
         cfg.setAllowCredentials(true);  // Allow credentials (cookies, Authorization headers)
         cfg.setAllowedHeaders(Collections.singletonList("*"));  // Allow all headers
