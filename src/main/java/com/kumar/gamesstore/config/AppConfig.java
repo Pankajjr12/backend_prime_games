@@ -41,7 +41,7 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000", "https://backend-prime-games.onrender.com"));  // Allowed frontend URLs
+        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000"));  // Allowed frontend URLs
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods
         cfg.setAllowCredentials(true);  // Allow credentials (cookies, Authorization headers)
         cfg.setAllowedHeaders(Collections.singletonList("*"));  // Allow all headers
