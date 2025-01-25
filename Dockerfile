@@ -10,7 +10,7 @@ COPY src ./src
 # Stage 2: Create the runtime image
 FROM openjdk:17-slim
 WORKDIR /app
-COPY --from=maven-builder /app/target/your-app-name.jar godelivery.jar
+COPY --from=maven-builder /app/target/*.jar godelivery.jar
 
 EXPOSE 4444
 ENTRYPOINT ["java", "-jar", "godelivery.jar"]
