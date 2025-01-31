@@ -2,19 +2,14 @@ package com.kumar.gamesstore;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootTest
-class PrimeGamingStoreApplicationTests  {
+@EnableCaching
+class PrimeGamingStoreApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
-
-
-
-
-
-
-
