@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kumar.gamesstore.exceptions.ProductException;
 import com.kumar.gamesstore.modals.Category;
 import com.kumar.gamesstore.modals.Product;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import com.kumar.gamesstore.repositories.ProductRepository;
 import com.kumar.gamesstore.requests.CreateProductRequest;
 import com.kumar.gamesstore.services.ProductService;
 
+import org.springframework.cache.annotation.Cacheable;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
@@ -111,6 +113,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
+    @Cacheable(value = "products", key = "#productId")
     @Override
     public Product findProductById(Long productId) throws ProductException {
         // TODO Auto-generated method stub
