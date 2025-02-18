@@ -47,8 +47,8 @@ public class AppConfig {
         cfg.setAllowedHeaders(Collections.singletonList("*"));  // Allow all headers
         cfg.setExposedHeaders(Arrays.asList("Authorization"));  // Expose Authorization header
         cfg.setMaxAge(3600L);  // Cache pre-flight response for 1 hour
-
         // Register the CORS configuration for all paths
+
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }
