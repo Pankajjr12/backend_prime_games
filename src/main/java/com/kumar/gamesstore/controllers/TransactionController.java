@@ -17,16 +17,18 @@ import com.kumar.gamesstore.modals.Transaction;
 import com.kumar.gamesstore.services.SellerService;
 import com.kumar.gamesstore.services.TransactionService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/transactions")
-@RequiredArgsConstructor
 public class TransactionController {
 
     private final TransactionService transactionService;
     private final SellerService sellerService;
-    
+
+    public TransactionController(TransactionService transactionService, SellerService sellerService) {
+        this.transactionService = transactionService;
+        this.sellerService = sellerService;
+    }
+
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Order order) {
         Transaction transaction = transactionService.createTransaction(order);
@@ -36,7 +38,7 @@ public class TransactionController {
     @GetMapping("/seller")
     public ResponseEntity<List<Transaction>> getTransactionBySeller(
             @RequestHeader("Authorization") String jwt) throws SellerException {
-        Seller seller=sellerService.getSellerProfile(jwt);
+        Seller seller = sellerService.getSellerProfile(jwt);
 
         List<Transaction> transactions = transactionService.getTransactionBySeller(seller);
         return ResponseEntity.ok(transactions);

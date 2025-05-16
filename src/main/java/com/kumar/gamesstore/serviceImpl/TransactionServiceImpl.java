@@ -11,34 +11,37 @@ import com.kumar.gamesstore.repositories.SellerRepository;
 import com.kumar.gamesstore.repositories.TransactionRepository;
 import com.kumar.gamesstore.services.TransactionService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
-	
-	 private final TransactionRepository transactionRepository;
-	 private final SellerRepository sellerRepository;
 
-	@Override
-	public Transaction createTransaction(Order order) {
-		
-	      Seller seller = sellerRepository.findById(order.getSellerId()).get();
-	        Transaction transaction = new Transaction();
-	        transaction.setCustomer(order.getUser());
-	        transaction.setOrder(order);
-	        transaction.setSeller(seller);
-	        return transactionRepository.save(transaction);
-	}
+    private final TransactionRepository transactionRepository;
+    private final SellerRepository sellerRepository;
 
-	 @Override
-	    public List<Transaction> getTransactionBySeller(Seller seller) {
-	        return transactionRepository.findBySellerId(seller.getId());
-	    }
+    public TransactionServiceImpl(TransactionRepository transactionRepository, SellerRepository sellerRepository) {
 
-	    @Override
-	    public List<Transaction> getAllTransactions() {
-	        return transactionRepository.findAll();
-	    }
+        this.transactionRepository = transactionRepository;
+        this.sellerRepository = sellerRepository;
+    }
+
+    @Override
+    public Transaction createTransaction(Order order) {
+
+        Seller seller = sellerRepository.findById(order.getSellerId()).get();
+        Transaction transaction = new Transaction();
+        transaction.setCustomer(order.getUser());
+        transaction.setOrder(order);
+        transaction.setSeller(seller);
+        return transactionRepository.save(transaction);
+    }
+
+    @Override
+    public List<Transaction> getTransactionBySeller(Seller seller) {
+        return transactionRepository.findBySellerId(seller.getId());
+    }
+
+    @Override
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
 
 }

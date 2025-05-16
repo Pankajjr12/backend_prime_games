@@ -45,38 +45,43 @@ import com.kumar.gamesstore.services.SellerService;
 import com.kumar.gamesstore.services.VerificationService;
 import com.kumar.gamesstore.utils.OtpUtils;
 
-import lombok.RequiredArgsConstructor;
+
 
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/sellers")
 public class SellerController {
 
-    @Autowired
     private final AuthService authService;
-
-    @Autowired
     private final SellerService sellerService;
-
-    @Autowired
     private final VerificationService verificationService;
-
-    @Autowired
     private final EmailService emailService;
-
-    @Autowired
-    private JwtProvider jwtProvider;
-
-    @Autowired
+    private final JwtProvider jwtProvider;
     private final CustomUserServiceImpl customeUserServiceImplementation;
-
+    private final VerificationRepository verificationRepository;
+    private final SellerRepository sellerRepository;
     private SellerReportService sellerReportService;
 
+    // ✅ Constructor for dependency injection
     @Autowired
-    private final VerificationRepository verificationRepository;
-
-    @Autowired
-    private final SellerRepository sellerRepository;
+    public SellerController(
+            AuthService authService,
+            SellerService sellerService,
+            VerificationService verificationService,
+            EmailService emailService,
+            JwtProvider jwtProvider,
+            CustomUserServiceImpl customeUserServiceImplementation,
+            VerificationRepository verificationRepository,
+            SellerRepository sellerRepository) {
+        this.authService = authService;
+        this.sellerService = sellerService;
+        this.verificationService = verificationService;
+        this.emailService = emailService;
+        this.jwtProvider = jwtProvider;
+        this.customeUserServiceImplementation = customeUserServiceImplementation;
+        this.verificationRepository = verificationRepository;
+        this.sellerRepository = sellerRepository;
+    }
 
     @PostMapping("/sent/login-top")
     public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req) throws Exception {

@@ -25,10 +25,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentOrderRepository paymentOrderRepository;
@@ -36,6 +33,16 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
 
     private final CartRepository cartRepository;
+
+    public PaymentServiceImpl(
+            PaymentOrderRepository paymentOrderRepository,
+            OrderRepository orderRepository,
+            CartRepository cartRepository
+    ) {
+        this.paymentOrderRepository = paymentOrderRepository;
+        this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
+    }
 
     @Value("${stripe.api.key}")
     private String stripeApiKey;

@@ -10,19 +10,22 @@ import com.kumar.gamesstore.repositories.DealRepository;
 import com.kumar.gamesstore.repositories.HomeCategoryRepository;
 import com.kumar.gamesstore.services.DealService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class DealServiceImpl implements DealService {
+
     private final DealRepository dealRepository;
     private final HomeCategoryRepository homeCategoryRepository;
 
+    public DealServiceImpl(DealRepository dealRepository, HomeCategoryRepository homeCategoryRepository) {
+        this.dealRepository = dealRepository;
+        this.homeCategoryRepository = homeCategoryRepository;
+    }
+
     @Override
     public Deal createDeal(Deal deal) {
-        HomeCategory category = deal.getHomeCategory().getId() != null 
-            ? homeCategoryRepository.findById(deal.getHomeCategory().getId()).orElse(null)
-            : null;
+        HomeCategory category = deal.getHomeCategory().getId() != null
+                ? homeCategoryRepository.findById(deal.getHomeCategory().getId()).orElse(null)
+                : null;
 
         if (category == null) {
             // If HomeCategory is not found, create a new one
@@ -47,23 +50,21 @@ public class DealServiceImpl implements DealService {
 //        else return dealRepository.findAll();
 //
 //    }
-
-
     @Override
     public List<Deal> getDeals() {
         return dealRepository.findAll();
     }
 
     @Override
-    public Deal updateDeal(Deal deal,Long id) throws Exception {
+    public Deal updateDeal(Deal deal, Long id) throws Exception {
         Deal existingDeal = dealRepository.findById(id).orElse(null);
-        HomeCategory category=homeCategoryRepository.findById(deal.getHomeCategory().getId()).orElse(null);
+        HomeCategory category = homeCategoryRepository.findById(deal.getHomeCategory().getId()).orElse(null);
 
-        if(existingDeal!=null){
-            if(deal.getDiscount()!=null){
+        if (existingDeal != null) {
+            if (deal.getDiscount() != null) {
                 existingDeal.setDiscount(deal.getDiscount());
             }
-            if(category!=null){
+            if (category != null) {
                 existingDeal.setHomeCategory(category);
             }
             return dealRepository.save(existingDeal);
@@ -81,6 +82,5 @@ public class DealServiceImpl implements DealService {
         }
 
     }
-
 
 }

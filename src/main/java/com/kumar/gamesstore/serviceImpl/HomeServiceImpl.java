@@ -14,77 +14,78 @@ import com.kumar.gamesstore.repositories.DealRepository;
 import com.kumar.gamesstore.repositories.HomeCategoryRepository;
 import com.kumar.gamesstore.services.HomeService;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @Service
-public class HomeServiceImpl implements HomeService{
-	
-	private final DealRepository dealRepository;
-	
-	private final HomeCategoryRepository homeCategoryRepository;
+public class HomeServiceImpl implements HomeService {
 
-	@Override
-	public Home creatHomePageData(List<HomeCategory> allCategories) {
-	    // Log the incoming categories
-	    System.out.println("All Categories Received: " + allCategories);
-	    Home home = new Home();
-	    
-	    // Filter categories based on section and map to the correct HomeCategorySection
-	    List<HomeCategory> gridCategories = allCategories.stream()
-	            .filter(category -> category.getSection() == HomeCategorySection.fromString("GRID"))
-	            .collect(Collectors.toList());
-	    System.out.println("Grid Categories: " + gridCategories);
+    private final DealRepository dealRepository;
 
-	    List<HomeCategory> shopByCategories = allCategories.stream()
-	            .filter(category -> category.getSection() == HomeCategorySection.fromString("SHOP_BY_CATEGORIES"))
-	            .collect(Collectors.toList());
-	    System.out.println("Shop By Categories: " + shopByCategories);
+    private final HomeCategoryRepository homeCategoryRepository;
 
-	    List<HomeCategory> gameCategories = allCategories.stream()
-	            .filter(category -> category.getSection() == HomeCategorySection.fromString("PC_GAMES_CATEGORIES"))
-	            .collect(Collectors.toList());
-	    System.out.println("Game Categories: " + gameCategories);
+    public HomeServiceImpl(DealRepository dealRepository, HomeCategoryRepository homeCategoryRepository) {
+        this.dealRepository = dealRepository;
+        this.homeCategoryRepository = homeCategoryRepository;
+    }
 
-	    List<HomeCategory> dealCategories = allCategories.stream()
-	            .filter(category -> category.getSection() == HomeCategorySection.fromString("DEALS"))
-	            .collect(Collectors.toList());
-	    System.out.println("Deal Categories: " + dealCategories);
+    @Override
+    public Home creatHomePageData(List<HomeCategory> allCategories) {
+        // Log the incoming categories
+        System.out.println("All Categories Received: " + allCategories);
+        Home home = new Home();
 
-	    List<Deal> createdDeals = new ArrayList<>();
-	    if (dealRepository.findAll().isEmpty()) {
-	        System.out.println("Creating new deals");
-	        List<Deal> deals = allCategories.stream()
-	                .filter(category -> category.getSection() == HomeCategorySection.fromString("DEALS"))
-	                .map(category -> new Deal(null, 10, category))  // Assuming a discount of 10 for each deal
-	                .collect(Collectors.toList());
-	        createdDeals = dealRepository.saveAll(deals);
-	        System.out.println("Created Deals: " + createdDeals);
-	    } else {
-	        createdDeals = dealRepository.findAll();
-	        System.out.println("Existing Deals: " + createdDeals);
-	    }
+        // Filter categories based on section and map to the correct HomeCategorySection
+        List<HomeCategory> gridCategories = allCategories.stream()
+                .filter(category -> category.getSection() == HomeCategorySection.fromString("GRID"))
+                .collect(Collectors.toList());
+        System.out.println("Grid Categories: " + gridCategories);
 
-	    // Set the categories and deals in the Home object
-	    home.setGrid(gridCategories);
-	    home.setShopByCategories(shopByCategories);
-	    home.setGameCategories(gameCategories);
-	    home.setDeals(createdDeals);
-	    home.setDealCategories(dealCategories);
+        List<HomeCategory> shopByCategories = allCategories.stream()
+                .filter(category -> category.getSection() == HomeCategorySection.fromString("SHOP_BY_CATEGORIES"))
+                .collect(Collectors.toList());
+        System.out.println("Shop By Categories: " + shopByCategories);
 
-	    // Log the final Home object
-	    System.out.println("Home Object Created: " + home);
-	    return home;
-	}
+        List<HomeCategory> gameCategories = allCategories.stream()
+                .filter(category -> category.getSection() == HomeCategorySection.fromString("PC_GAMES_CATEGORIES"))
+                .collect(Collectors.toList());
+        System.out.println("Game Categories: " + gameCategories);
 
-	@Override
-	public Home getHomePageData() {
-		  List<HomeCategory> allCategories = homeCategoryRepository.findAll();
+        List<HomeCategory> dealCategories = allCategories.stream()
+                .filter(category -> category.getSection() == HomeCategorySection.fromString("DEALS"))
+                .collect(Collectors.toList());
+        System.out.println("Deal Categories: " + dealCategories);
 
-	        // Use the existing logic to create a Home object (assuming this logic exists)
-	        // This could include filtering categories by section, handling deals, etc.
-	        return creatHomePageData(allCategories);
-	}
+        List<Deal> createdDeals = new ArrayList<>();
+        if (dealRepository.findAll().isEmpty()) {
+            System.out.println("Creating new deals");
+            List<Deal> deals = allCategories.stream()
+                    .filter(category -> category.getSection() == HomeCategorySection.fromString("DEALS"))
+                    .map(category -> new Deal(null, 10, category)) // Assuming a discount of 10 for each deal
+                    .collect(Collectors.toList());
+            createdDeals = dealRepository.saveAll(deals);
+            System.out.println("Created Deals: " + createdDeals);
+        } else {
+            createdDeals = dealRepository.findAll();
+            System.out.println("Existing Deals: " + createdDeals);
+        }
 
+        // Set the categories and deals in the Home object
+        home.setGrid(gridCategories);
+        home.setShopByCategories(shopByCategories);
+        home.setGameCategories(gameCategories);
+        home.setDeals(createdDeals);
+        home.setDealCategories(dealCategories);
+
+        // Log the final Home object
+        System.out.println("Home Object Created: " + home);
+        return home;
+    }
+
+    @Override
+    public Home getHomePageData() {
+        List<HomeCategory> allCategories = homeCategoryRepository.findAll();
+
+        // Use the existing logic to create a Home object (assuming this logic exists)
+        // This could include filtering categories by section, handling deals, etc.
+        return creatHomePageData(allCategories);
+    }
 
 }

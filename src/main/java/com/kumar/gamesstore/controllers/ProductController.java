@@ -17,10 +17,7 @@ import com.kumar.gamesstore.services.ProductService;
 import com.kumar.gamesstore.services.SellerService;
 import com.kumar.gamesstore.services.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
 
@@ -29,6 +26,12 @@ public class ProductController {
     private final UserService userService;
 
     private final SellerService sellerService;
+
+    public ProductController(ProductService productService, UserService userService, SellerService sellerService) {
+        this.productService = productService;
+        this.userService = userService;
+        this.sellerService = sellerService;
+    }
 
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long productId) throws ProductException {

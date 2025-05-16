@@ -17,28 +17,28 @@ import com.kumar.gamesstore.modals.Deal;
 import com.kumar.gamesstore.responses.ApiResponse;
 import com.kumar.gamesstore.services.DealService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/admin/deals")
 public class DealController {
+
     private final DealService dealService;
+
+    public DealController(DealService dealService) {
+        this.dealService = dealService;
+    }
 
     @PostMapping
     public ResponseEntity<Deal> createDeals(
             @RequestBody Deal deals
-    ){
-        Deal createdDeals=dealService.createDeal(deals);
+    ) {
+        Deal createdDeals = dealService.createDeal(deals);
 
         return new ResponseEntity<>(createdDeals, HttpStatus.ACCEPTED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Deal>> getDeals(
-
-    ){
-        List<Deal> deals=dealService.getDeals();
+    public ResponseEntity<List<Deal>> getDeals() {
+        List<Deal> deals = dealService.getDeals();
 
         return new ResponseEntity<>(deals, HttpStatus.ACCEPTED);
     }
@@ -48,7 +48,7 @@ public class DealController {
             @PathVariable Long id,
             @RequestBody Deal deal) throws Exception {
 
-        Deal updatedDeal=dealService.updateDeal(deal,id);
+        Deal updatedDeal = dealService.updateDeal(deal, id);
         return ResponseEntity.ok(updatedDeal);
 
     }
@@ -59,10 +59,10 @@ public class DealController {
     ) throws Exception {
         dealService.deleteDeal(id);
 
-        ApiResponse apiResponse=new ApiResponse();
+        ApiResponse apiResponse = new ApiResponse();
         apiResponse.setMessage("Deal deleted");
 
         return new ResponseEntity<>(apiResponse, HttpStatus.ACCEPTED);
     }
-	
+
 }

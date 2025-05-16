@@ -15,14 +15,17 @@ import com.kumar.gamesstore.modals.Seller;
 import com.kumar.gamesstore.services.RevenueService;
 import com.kumar.gamesstore.services.SellerService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/seller/revenue/chart")
 public class RevenueController {
+
     private final RevenueService revenueService;
     private final SellerService sellerService;
+
+    public RevenueController(RevenueService revenueService, SellerService sellerService) {
+        this.revenueService = revenueService;
+        this.sellerService = sellerService;
+    }
 
     @GetMapping()
     public ResponseEntity<List<ReviewChart>> getRevenueChart(

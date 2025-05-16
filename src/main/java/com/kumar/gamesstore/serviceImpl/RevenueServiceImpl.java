@@ -12,132 +12,134 @@ import com.kumar.gamesstore.modals.Order;
 import com.kumar.gamesstore.repositories.OrderRepository;
 import com.kumar.gamesstore.services.RevenueService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
+
 public class RevenueServiceImpl implements RevenueService {
-	
-	 private final OrderRepository orderRepository;
 
-	@Override
-	public List<ReviewChart> getDailyRevenueForChart(int days, Long sellerId) {
-		  List<ReviewChart> revenueData = new ArrayList<>();
-	        
-		  LocalDate currentDate = LocalDate.now();
-		  for (int i = days - 1; i >= 0; i--) {
-	            LocalDate date = currentDate.minusDays(i);
-	            double dailyRevenue = orderRepository
-	                    .findBySellerIdAndOrderDateBetween(sellerId,date.atStartOfDay(), date.plusDays(1).atStartOfDay())
-	                    .stream()
-	                    .mapToDouble(Order::getTotalSellingPrice)
-	                    .sum();
+    private final OrderRepository orderRepository;
 
-	            ReviewChart revenueChart=new ReviewChart();
-	            revenueChart.setRevenue(dailyRevenue);
-	            revenueChart.setDate(date.toString());
+    public RevenueServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
-	            revenueData.add(revenueChart);
-	        }
+    @Override
+    public List<ReviewChart> getDailyRevenueForChart(int days, Long sellerId) {
+        List<ReviewChart> revenueData = new ArrayList<>();
 
-	        return revenueData;
-	}
+        LocalDate currentDate = LocalDate.now();
+        for (int i = days - 1; i >= 0; i--) {
+            LocalDate date = currentDate.minusDays(i);
+            double dailyRevenue = orderRepository
+                    .findBySellerIdAndOrderDateBetween(sellerId, date.atStartOfDay(), date.plusDays(1).atStartOfDay())
+                    .stream()
+                    .mapToDouble(Order::getTotalSellingPrice)
+                    .sum();
 
-	@Override
-	public List<ReviewChart> getMonthlyRevenueForChart(int months, Long sellerId) {
-		   List<ReviewChart> revenueData = new ArrayList<>();
-	        LocalDate currentDate = LocalDate.now();
+            ReviewChart revenueChart = new ReviewChart();
+            revenueChart.setRevenue(dailyRevenue);
+            revenueChart.setDate(date.toString());
 
-	        for (int i = months - 1; i >= 0; i--) {
-	            LocalDate date = currentDate.minusMonths(i);
-	            LocalDate startOfMonth = date.withDayOfMonth(1);
-	            LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
+            revenueData.add(revenueChart);
+        }
 
-	            double monthlyRevenue = orderRepository
-	                    .findBySellerIdAndOrderDateBetween(sellerId,startOfMonth.atStartOfDay(), startOfNextMonth.atStartOfDay())
-	                    .stream()
-	                    .mapToDouble(Order::getTotalSellingPrice)
-	                    .sum();
+        return revenueData;
+    }
 
-	            ReviewChart revenueChart=new ReviewChart();
-	            revenueChart.setRevenue(monthlyRevenue);
-	            revenueChart.setDate( date.getYear() + "-" + String.format("%02d", date.getMonthValue()));
+    @Override
+    public List<ReviewChart> getMonthlyRevenueForChart(int months, Long sellerId) {
+        List<ReviewChart> revenueData = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
 
-	            revenueData.add(revenueChart);
-	}
-	        return revenueData;
-	}
+        for (int i = months - 1; i >= 0; i--) {
+            LocalDate date = currentDate.minusMonths(i);
+            LocalDate startOfMonth = date.withDayOfMonth(1);
+            LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
 
-	@Override
-	public List<ReviewChart> getYearlyRevenueForChart(int years, Long sellerId) {
-	
-		 List<ReviewChart> revenueData = new ArrayList<>();
-	        LocalDate currentDate = LocalDate.now();
+            double monthlyRevenue = orderRepository
+                    .findBySellerIdAndOrderDateBetween(sellerId, startOfMonth.atStartOfDay(), startOfNextMonth.atStartOfDay())
+                    .stream()
+                    .mapToDouble(Order::getTotalSellingPrice)
+                    .sum();
 
-	        for (int i = years - 1; i >= 0; i--) {
-	            LocalDate startOfYear = currentDate.minusYears(i).withDayOfYear(1);
-	            LocalDate startOfNextYear = startOfYear.plusYears(1);
+            ReviewChart revenueChart = new ReviewChart();
+            revenueChart.setRevenue(monthlyRevenue);
+            revenueChart.setDate(date.getYear() + "-" + String.format("%02d", date.getMonthValue()));
 
-	            double yearlyRevenue = orderRepository
-	                    .findBySellerIdAndOrderDateBetween(sellerId,startOfYear.atStartOfDay(), startOfNextYear.atStartOfDay())
-	                    .stream()
-	                    .mapToDouble(Order::getTotalSellingPrice)
-	                    .sum();
+            revenueData.add(revenueChart);
+        }
+        return revenueData;
+    }
 
-	            ReviewChart revenueChart=new ReviewChart();
-	            revenueChart.setRevenue(yearlyRevenue);
-	            revenueChart.setDate(String.valueOf(startOfYear.getYear()));
-	            revenueData.add(revenueChart);
-	        }
+    @Override
+    public List<ReviewChart> getYearlyRevenueForChart(int years, Long sellerId) {
 
-	        return revenueData;
-	}
+        List<ReviewChart> revenueData = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
 
-	@Override
-	public List<ReviewChart> getHourlyRevenueForChart(Long sellerId) {
-		
-		  List<ReviewChart> revenueData = new ArrayList<>();
+        for (int i = years - 1; i >= 0; i--) {
+            LocalDate startOfYear = currentDate.minusYears(i).withDayOfYear(1);
+            LocalDate startOfNextYear = startOfYear.plusYears(1);
 
-	        // Get the current date
-	        LocalDate currentDate = LocalDate.now();
+            double yearlyRevenue = orderRepository
+                    .findBySellerIdAndOrderDateBetween(sellerId, startOfYear.atStartOfDay(), startOfNextYear.atStartOfDay())
+                    .stream()
+                    .mapToDouble(Order::getTotalSellingPrice)
+                    .sum();
 
-	        // Define the start of the day (12 AM, or 00:00) and loop through 24 hours
-	        LocalDateTime startOfDay = currentDate.atStartOfDay(); // 12 AM (00:00) of the current day
+            ReviewChart revenueChart = new ReviewChart();
+            revenueChart.setRevenue(yearlyRevenue);
+            revenueChart.setDate(String.valueOf(startOfYear.getYear()));
+            revenueData.add(revenueChart);
+        }
 
-	        // Loop through each hour of the day from 12 AM to 11:59 PM
-	        for (int i = 0; i < 24; i++) {
-	            LocalDateTime startOfHour = startOfDay.plusHours(i);
-	            LocalDateTime startOfNextHour = startOfHour.plusHours(1); // Next hour boundary
+        return revenueData;
+    }
 
-	            // Calculate revenue for this hour (from startOfHour to startOfNextHour)
-	            double hourlyRevenue = orderRepository
-	                    .findBySellerIdAndOrderDateBetween(sellerId, startOfHour, startOfNextHour)
-	                    .stream()
-	                    .mapToDouble(Order::getTotalSellingPrice)
-	                    .sum();
+    @Override
+    public List<ReviewChart> getHourlyRevenueForChart(Long sellerId) {
 
-	            // Prepare the data for this hour
-	            ReviewChart revenueChart = new ReviewChart();
-	            revenueChart.setRevenue(hourlyRevenue);
-	            revenueChart.setDate(startOfHour.getHour() + ":00");  // Format as "HH:00" (e.g., "00:00", "01:00")
+        List<ReviewChart> revenueData = new ArrayList<>();
 
-	            // Add the hourly revenue data to the list
-	            revenueData.add(revenueChart);
-	        }
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
 
-	        return revenueData;
-	}
+        // Define the start of the day (12 AM, or 00:00) and loop through 24 hours
+        LocalDateTime startOfDay = currentDate.atStartOfDay(); // 12 AM (00:00) of the current day
 
-	@Override
-	public List<ReviewChart> getRevenueChartByType(String type, Long sellerId) {
-		
-		  if(type.equals("monthly")){
-	            return this.getMonthlyRevenueForChart(12,sellerId);
-	        }
-	        else if(type.equals("daily")){
-	            return this.getDailyRevenueForChart(30,sellerId);
-	        }
-	        else return this.getHourlyRevenueForChart(sellerId);
-	    }
-	
+        // Loop through each hour of the day from 12 AM to 11:59 PM
+        for (int i = 0; i < 24; i++) {
+            LocalDateTime startOfHour = startOfDay.plusHours(i);
+            LocalDateTime startOfNextHour = startOfHour.plusHours(1); // Next hour boundary
+
+            // Calculate revenue for this hour (from startOfHour to startOfNextHour)
+            double hourlyRevenue = orderRepository
+                    .findBySellerIdAndOrderDateBetween(sellerId, startOfHour, startOfNextHour)
+                    .stream()
+                    .mapToDouble(Order::getTotalSellingPrice)
+                    .sum();
+
+            // Prepare the data for this hour
+            ReviewChart revenueChart = new ReviewChart();
+            revenueChart.setRevenue(hourlyRevenue);
+            revenueChart.setDate(startOfHour.getHour() + ":00");  // Format as "HH:00" (e.g., "00:00", "01:00")
+
+            // Add the hourly revenue data to the list
+            revenueData.add(revenueChart);
+        }
+
+        return revenueData;
+    }
+
+    @Override
+    public List<ReviewChart> getRevenueChartByType(String type, Long sellerId) {
+
+        if (type.equals("monthly")) {
+            return this.getMonthlyRevenueForChart(12, sellerId);
+        } else if (type.equals("daily")) {
+            return this.getDailyRevenueForChart(30, sellerId);
+        } else {
+            return this.getHourlyRevenueForChart(sellerId);
+        }
+    }
+
 }

@@ -19,17 +19,21 @@ import com.kumar.gamesstore.services.ProductService;
 import com.kumar.gamesstore.services.UserService;
 import com.kumar.gamesstore.services.WishlistService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/wishlist")
-@RequiredArgsConstructor
+
 public class WishListController {
 
-	private final WishlistService wishlistService;
+    private final WishlistService wishlistService;
     private final ProductService productService;
     private final UserService userService;
-    
+
+    public WishListController(WishlistService wishlistService, ProductService productService, UserService userService) {
+        this.wishlistService = wishlistService;
+        this.productService = productService;
+        this.userService = userService;
+    }
+
     @PostMapping("/create")
     public ResponseEntity<WishList> createWishlist(@RequestBody User user) {
         WishList wishlist = wishlistService.createWishlist(user);
@@ -44,14 +48,14 @@ public class WishListController {
         WishList wishlist = wishlistService.getWishlistByUserId(user);
         return ResponseEntity.ok(wishlist);
     }
-    
+
     @PostMapping("/add-product/{productId}")
     public ResponseEntity<WishList> addProductToWishlist(
             @PathVariable Long productId,
             @RequestHeader("Authorization") String jwt) throws WishlistNotFoundException, ProductException, UserException {
 
         Product product = productService.findProductById(productId);
-        User user=userService.findUserByJwtToken(jwt);
+        User user = userService.findUserByJwtToken(jwt);
         WishList updatedWishlist = wishlistService.addProductToWishlist(
                 user,
                 product

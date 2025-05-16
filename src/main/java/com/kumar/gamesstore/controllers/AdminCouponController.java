@@ -20,57 +20,58 @@ import com.kumar.gamesstore.services.CartService;
 import com.kumar.gamesstore.services.CouponService;
 import com.kumar.gamesstore.services.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/coupons")
-@RequiredArgsConstructor
 public class AdminCouponController {
 
-	
-	 private final CouponService couponService;
-	    
-	 private final UserService userService;
-	    
-	 private final CartService cartService;
-	 
-	   @PostMapping("/apply")
-	    public ResponseEntity<Cart> applyCoupon(
-	            @RequestParam String apply,
-	            @RequestParam String code,
-	            @RequestParam double orderValue,
-	            @RequestHeader("Authorization"
-	            ) String jwt
-	    ) throws Exception {
-	        User user=userService.findUserByJwtToken(jwt);
-	        Cart cart;
+    private final CouponService couponService;
 
-	        if(apply.equals("true")){
-	            cart = couponService.applyCoupon(code,orderValue,user);
-	        }
-	        else {
-	            cart = couponService.removeCoupon(code,user);
-	        }
+    private final UserService userService;
 
-	        return ResponseEntity.ok(cart);
+    private final CartService cartService;
 
-	    }
-	   
-	    @PostMapping("/admin/create")
-	    public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon) {
-	        Coupon createdCoupon = couponService.createCoupon(coupon);
-	        return ResponseEntity.ok(createdCoupon);
-	    }
+    public AdminCouponController(CouponService couponService, UserService userService, CartService cartService) {
+        this.couponService = couponService;
+        this.userService = userService;
+        this.cartService = cartService;
+    }
 
-	    @DeleteMapping("/admin/delete/{id}")
-	    public ResponseEntity<?> deleteCoupon(@PathVariable Long id) {
-	        couponService.deleteCoupon(id);
-	        return ResponseEntity.ok("Coupon deleted successfully");
-	    }
+    @PostMapping("/apply")
+    public ResponseEntity<Cart> applyCoupon(
+            @RequestParam String apply,
+            @RequestParam String code,
+            @RequestParam double orderValue,
+            @RequestHeader("Authorization"
+            ) String jwt
+    ) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        Cart cart;
 
-	    @GetMapping("/admin/all")
-	    public ResponseEntity<List<Coupon>> getAllCoupons() {
-	        List<Coupon> coupons = couponService.getAllCoupons();
-	        return ResponseEntity.ok(coupons);
-	    }
+        if (apply.equals("true")) {
+            cart = couponService.applyCoupon(code, orderValue, user);
+        } else {
+            cart = couponService.removeCoupon(code, user);
+        }
+
+        return ResponseEntity.ok(cart);
+
+    }
+
+    @PostMapping("/admin/create")
+    public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon) {
+        Coupon createdCoupon = couponService.createCoupon(coupon);
+        return ResponseEntity.ok(createdCoupon);
+    }
+
+    @DeleteMapping("/admin/delete/{id}")
+    public ResponseEntity<?> deleteCoupon(@PathVariable Long id) {
+        couponService.deleteCoupon(id);
+        return ResponseEntity.ok("Coupon deleted successfully");
+    }
+
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<Coupon>> getAllCoupons() {
+        List<Coupon> coupons = couponService.getAllCoupons();
+        return ResponseEntity.ok(coupons);
+    }
 }

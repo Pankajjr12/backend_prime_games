@@ -27,10 +27,7 @@ import com.kumar.gamesstore.repositories.UserRepository;
 import com.kumar.gamesstore.responses.ApiResponse;
 import com.kumar.gamesstore.responses.FunctionResponse;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AiChatBotServiceImpl implements AiChatbotService {
 
     String GEMINI_API_KEY = "AIzaSyAxdinQIIN6EfCAOYjN37_tV7xbl5IoiWg";
@@ -40,56 +37,63 @@ public class AiChatBotServiceImpl implements AiChatbotService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
+    public AiChatBotServiceImpl(CartRepository cartRepository, OrderRepository orderRepository, ProductRepository productRepository, UserRepository userRepository) {
+        this.cartRepository = cartRepository;
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+        this.userRepository = userRepository;
+    }
+
     private JSONArray createFunctionDeclarations() {
         return new JSONArray()
-            .put(new JSONObject()
-                .put("name", "getUserCart")
-                .put("description", "Retrieve the user's cart details")
-                .put("parameters", new JSONObject()
-                    .put("type", "OBJECT")
-                    .put("properties", new JSONObject()
-                        .put("cart", new JSONObject()
-                            .put("type", "STRING")
-                            .put("description", "Cart Details, like total item in cart, cart item, remove item from cart, cart Id")
+                .put(new JSONObject()
+                        .put("name", "getUserCart")
+                        .put("description", "Retrieve the user's cart details")
+                        .put("parameters", new JSONObject()
+                                .put("type", "OBJECT")
+                                .put("properties", new JSONObject()
+                                        .put("cart", new JSONObject()
+                                                .put("type", "STRING")
+                                                .put("description", "Cart Details, like total item in cart, cart item, remove item from cart, cart Id")
+                                        )
+                                )
+                                .put("required", new JSONArray()
+                                        .put("cart")
+                                )
                         )
-                    )
-                    .put("required", new JSONArray()
-                        .put("cart")
-                    )
                 )
-            )
-            .put(new JSONObject()
-                .put("name", "getUsersOrder")
-                .put("description", "Retrieve the user's order details")
-                .put("parameters", new JSONObject()
-                    .put("type", "OBJECT")
-                    .put("properties", new JSONObject()
-                        .put("order", new JSONObject()
-                            .put("type", "STRING")
-                            .put("description", "Order Details, order, total order, current order, delivered order, pending order, current order, canceled order")
+                .put(new JSONObject()
+                        .put("name", "getUsersOrder")
+                        .put("description", "Retrieve the user's order details")
+                        .put("parameters", new JSONObject()
+                                .put("type", "OBJECT")
+                                .put("properties", new JSONObject()
+                                        .put("order", new JSONObject()
+                                                .put("type", "STRING")
+                                                .put("description", "Order Details, order, total order, current order, delivered order, pending order, current order, canceled order")
+                                        )
+                                )
+                                .put("required", new JSONArray()
+                                        .put("order")
+                                )
                         )
-                    )
-                    .put("required", new JSONArray()
-                        .put("order")
-                    )
                 )
-            )
-            .put(new JSONObject()
-                .put("name", "getProductDetails")
-                .put("description", "Retrieve product details")
-                .put("parameters", new JSONObject()
-                    .put("type", "OBJECT")
-                    .put("properties", new JSONObject()
-                        .put("product", new JSONObject()
-                            .put("type", "STRING")
-                            .put("description", "The Product Details like, Product title, product id, product color, product size, selling price, mrp price, rating extra...")
+                .put(new JSONObject()
+                        .put("name", "getProductDetails")
+                        .put("description", "Retrieve product details")
+                        .put("parameters", new JSONObject()
+                                .put("type", "OBJECT")
+                                .put("properties", new JSONObject()
+                                        .put("product", new JSONObject()
+                                                .put("type", "STRING")
+                                                .put("description", "The Product Details like, Product title, product id, product color, product size, selling price, mrp price, rating extra...")
+                                        )
+                                )
+                                .put("required", new JSONArray()
+                                        .put("product")
+                                )
                         )
-                    )
-                    .put("required", new JSONArray()
-                        .put("product")
-                    )
-                )
-            );
+                );
     }
 
     private FunctionResponse processFunctionCall(JSONObject functionCall,
@@ -115,7 +119,7 @@ public class AiChatBotServiceImpl implements AiChatbotService {
                 break;
             case "getProductDetails":
                 Product product = productRepository.findById(productId).orElseThrow(
-                    () -> new ProductException("product not found")
+                        () -> new ProductException("product not found")
                 );
                 res.setProduct(product);
                 break;
@@ -191,7 +195,6 @@ public class AiChatBotServiceImpl implements AiChatbotService {
             response.setMessage("Ok bye have a nice day. 👍 ");
             return response;
         }
-
 
         // If not "hi" or "ok", continue with the usual functionality.
         String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;

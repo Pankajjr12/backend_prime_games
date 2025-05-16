@@ -22,17 +22,23 @@ import com.kumar.gamesstore.services.ProductService;
 import com.kumar.gamesstore.services.SellerService;
 import com.kumar.gamesstore.services.UserService;
 
-import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/sellers/product")
-@RequiredArgsConstructor
+
 public class SellerProductController {
 
 
     private final ProductService productService;
     private final SellerService sellerService;
     private final UserService userService;
+
+    public SellerProductController(ProductService productService, SellerService sellerService, UserService userService) {
+        this.productService = productService;
+        this.sellerService = sellerService;
+        this.userService = userService;
+    }
     
     @GetMapping()
     public ResponseEntity<List<Product>> getProductBySellerId(

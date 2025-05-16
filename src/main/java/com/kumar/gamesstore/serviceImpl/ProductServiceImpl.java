@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.kumar.gamesstore.exceptions.ProductException;
-import com.kumar.gamesstore.modals.Category;
-import com.kumar.gamesstore.modals.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
+import com.kumar.gamesstore.exceptions.ProductException;
+import com.kumar.gamesstore.modals.Category;
+import com.kumar.gamesstore.modals.Product;
 import com.kumar.gamesstore.modals.Seller;
 import com.kumar.gamesstore.repositories.CategoryRepository;
 import com.kumar.gamesstore.repositories.ProductRepository;
@@ -24,14 +24,17 @@ import com.kumar.gamesstore.services.ProductService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public Product createProduct(CreateProductRequest req, Seller seller) {
@@ -202,7 +205,7 @@ public class ProductServiceImpl implements ProductService {
     public Product updateProductStock(Long productId) throws ProductException {
         // TODO Auto-generated method stub
         Product product = this.findProductById(productId);
-        product.setIn_stock(!product.isIn_stock());
+        product.setInStock(!product.isInStock());
         return productRepository.save(product);
     }
 

@@ -26,17 +26,21 @@ import com.kumar.gamesstore.services.ReviewService;
 import com.kumar.gamesstore.services.UserService;
 import javax.naming.AuthenticationException;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/api")
 public class ReviewController {
-	
+
     private final ReviewService reviewService;
     private final UserService userService;
     private final ProductService productService;
-    
+
+    public ReviewController(ReviewService reviewService, UserService userService, ProductService productService) {
+        this.reviewService = reviewService;
+        this.userService = userService;
+        this.productService = productService;
+    }
+
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<List<Review>> getReviewsByProductId(
             @PathVariable Long productId) {
@@ -61,7 +65,7 @@ public class ReviewController {
         return ResponseEntity.ok(review);
 
     }
-    
+
     @PatchMapping("/reviews/{reviewId}")
     public ResponseEntity<Review> updateReview(
             @RequestBody CreateReviewRequest req,
@@ -81,7 +85,7 @@ public class ReviewController {
         return ResponseEntity.ok(review);
 
     }
-    
+
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<ApiResponse> deleteReview(
             @PathVariable Long reviewId,

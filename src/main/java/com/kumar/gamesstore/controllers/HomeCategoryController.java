@@ -14,39 +14,38 @@ import com.kumar.gamesstore.modals.HomeCategory;
 import com.kumar.gamesstore.services.HomeCategoryService;
 import com.kumar.gamesstore.services.HomeService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
-@RequiredArgsConstructor
 public class HomeCategoryController {
 
-	
-	   private final HomeCategoryService homeCategoryService;
-	    private final HomeService homeService;
+    private final HomeCategoryService homeCategoryService;
+    private final HomeService homeService;
 
-	    @GetMapping("/home-page")
-	    public ResponseEntity<Home> getHomePageData() {
-	        Home homePageData = homeService.getHomePageData();
-	        return new ResponseEntity<>(homePageData, HttpStatus.ACCEPTED);
-	 
-	    }
+    public HomeCategoryController(HomeCategoryService homeCategoryService, HomeService homeService) {
+        this.homeCategoryService = homeCategoryService;
+        this.homeService = homeService;
+    }
 
-	    @PostMapping("/home/categories")
-	    public ResponseEntity<Home> createHomeCategories(
-	            @RequestBody List<HomeCategory> homeCategories
-	    ) {
-	        List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
-	        Home home=homeService.creatHomePageData(categories);
-	        return new ResponseEntity<>(home, HttpStatus.ACCEPTED);
-	    }
+    @GetMapping("/home-page")
+    public ResponseEntity<Home> getHomePageData() {
+        Home homePageData = homeService.getHomePageData();
+        return new ResponseEntity<>(homePageData, HttpStatus.ACCEPTED);
 
-	    
-	    @GetMapping("/home-category")
-	    public ResponseEntity<List<HomeCategory>> getHomeCategory(
-	          ) throws Exception {
+    }
 
-	        List<HomeCategory> categories=homeCategoryService.getAllCategories();
-	        return ResponseEntity.ok(categories);
+    @PostMapping("/home/categories")
+    public ResponseEntity<Home> createHomeCategories(
+            @RequestBody List<HomeCategory> homeCategories
+    ) {
+        List<HomeCategory> categories = homeCategoryService.createCategories(homeCategories);
+        Home home = homeService.creatHomePageData(categories);
+        return new ResponseEntity<>(home, HttpStatus.ACCEPTED);
+    }
 
-	    }
+    @GetMapping("/home-category")
+    public ResponseEntity<List<HomeCategory>> getHomeCategory() throws Exception {
+
+        List<HomeCategory> categories = homeCategoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+
+    }
 }

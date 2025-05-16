@@ -14,40 +14,41 @@ import com.kumar.gamesstore.requests.Prompt;
 import com.kumar.gamesstore.responses.ApiResponse;
 import com.kumar.gamesstore.services.UserService;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/ai/chat")
 public class AiChatBotController {
 
     private final AiChatbotService aiChatBotService;
-    
-	
-	private final UserService userService;
+
+    private final UserService userService;
+
+    public AiChatBotController(AiChatbotService aiChatBotService, UserService userService) {
+        this.aiChatBotService = aiChatBotService;
+        this.userService = userService;
+    }
 
     @PostMapping()
     public ResponseEntity<ApiResponse> generate(
             @RequestBody Prompt prompt,
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long productId,
-            @RequestHeader(required = false,name = "Authorization")String jwt) throws Exception {
+            @RequestHeader(required = false, name = "Authorization") String jwt) throws Exception {
 
         String message = prompt.getPrompt();
         if (productId != null) {
-            message = "the product id is " + productId +", " + message ;
+            message = "the product id is " + productId + ", " + message;
         }
 
-        User user=new User();
-        if(jwt!=null)
-            user=userService.findUserByJwtToken(jwt);
+        User user = new User();
+        if (jwt != null) {
+            user = userService.findUserByJwtToken(jwt);
+        }
 
 //        Long userId;
 //        if(user!=null){
 //            userId=user.getId();
 //        }
-
-        ApiResponse apiResponse = aiChatBotService.aiChatBot(message,productId,user.getId());
+        ApiResponse apiResponse = aiChatBotService.aiChatBot(message, productId, user.getId());
 
         return ResponseEntity.ok(apiResponse);
 

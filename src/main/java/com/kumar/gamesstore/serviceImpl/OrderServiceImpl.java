@@ -24,131 +24,134 @@ import com.kumar.gamesstore.repositories.OrderItemRepository;
 import com.kumar.gamesstore.repositories.OrderRepository;
 import com.kumar.gamesstore.repositories.UserRepository;
 import com.kumar.gamesstore.services.CartService;
-
 import com.kumar.gamesstore.services.OrderService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-	
-	private final OrderRepository orderRepository;
-	private final CartService cartService;
-	private final AddressRepository addressRepository;
-	private final UserRepository userRepository;
-	
-	private final OrderItemRepository orderItemRepository;
 
-	@Override
-	public Set<Order> createOrder(User user, Address shippingAddress, Cart cart) {
-		// TODO Auto-generated method stub
-		
-		if(!user.getAddresses().contains(shippingAddress)){
-			user.getAddresses().add(shippingAddress);
-		}
+    private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
+    private final OrderItemRepository orderItemRepository;
 
+    public OrderServiceImpl(
+            OrderRepository orderRepository,
+            CartService cartService,
+            AddressRepository addressRepository,
+            UserRepository userRepository,
+            OrderItemRepository orderItemRepository
+    ) {
+        this.orderRepository = orderRepository;
+        this.addressRepository = addressRepository;
+        this.orderItemRepository = orderItemRepository;
+    }
 
-		Address address= addressRepository.save(shippingAddress);
-		
-		Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
-				.collect(Collectors.groupingBy(item -> item.getProduct().getSeller().getId()));
+    @Override
+    public Set<Order> createOrder(User user, Address shippingAddress, Cart cart) {
+        // TODO Auto-generated method stub
 
-		Set<Order> orders=new HashSet<>();
-		
-		for(Map.Entry<Long, List<CartItem>> entry:itemsBySeller.entrySet()){
-			Long sellerId=entry.getKey();
-			List<CartItem> cartItems=entry.getValue();
+        if (!user.getAddresses().contains(shippingAddress)) {
+            user.getAddresses().add(shippingAddress);
+        }
 
-			int totalOrderPrice = cartItems.stream()
-					.mapToInt(CartItem::getSellingPrice).sum();
-			int totalItem=cartItems.stream().mapToInt(CartItem::getQuantity).sum();
+        Address address = addressRepository.save(shippingAddress);
 
-			Order createdOrder=new Order();
-			createdOrder.setUser(user);
-			createdOrder.setSellerId(sellerId);
-			createdOrder.setTotalMrpPrice(totalOrderPrice);
-			createdOrder.setTotalSellingPrice(totalOrderPrice);
-			createdOrder.setTotalItem(totalItem);
-			createdOrder.setShippingAddress(address);
-			createdOrder.setOrderStatus(OrderStatus.PENDING);
-			createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
+        Map<Long, List<CartItem>> itemsBySeller = cart.getCartItems().stream()
+                .collect(Collectors.groupingBy(item -> item.getProduct().getSeller().getId()));
 
-			Order savedOrder=orderRepository.save(createdOrder);
-			orders.add(savedOrder);
+        Set<Order> orders = new HashSet<>();
 
+        for (Map.Entry<Long, List<CartItem>> entry : itemsBySeller.entrySet()) {
+            Long sellerId = entry.getKey();
+            List<CartItem> cartItems = entry.getValue();
 
-			List<OrderItem> orderItems=new ArrayList<>();
+            int totalOrderPrice = cartItems.stream()
+                    .mapToInt(CartItem::getSellingPrice).sum();
+            int totalItem = cartItems.stream().mapToInt(CartItem::getQuantity).sum();
 
-			for(CartItem item: cartItems) {
-				OrderItem orderItem=new OrderItem();
+            Order createdOrder = new Order();
+            createdOrder.setUser(user);
+            createdOrder.setSellerId(sellerId);
+            createdOrder.setTotalMrpPrice(totalOrderPrice);
+            createdOrder.setTotalSellingPrice(totalOrderPrice);
+            createdOrder.setTotalItem(totalItem);
+            createdOrder.setShippingAddress(address);
+            createdOrder.setOrderStatus(OrderStatus.PENDING);
+            createdOrder.getPaymentDetails().setStatus(PaymentStatus.PENDING);
 
-				orderItem.setOrder(savedOrder);
-				orderItem.setMrpPrice(item.getMrpPrice());
-				orderItem.setProduct(item.getProduct());
-				orderItem.setQuantity(item.getQuantity());
-				orderItem.setYear(item.getYear());;
-				orderItem.setUserId(item.getUserId());
-				orderItem.setSellingPrice(item.getSellingPrice());
+            Order savedOrder = orderRepository.save(createdOrder);
+            orders.add(savedOrder);
 
-				savedOrder.getOrderItems().add(orderItem);
+            List<OrderItem> orderItems = new ArrayList<>();
 
-				OrderItem createdOrderItem=orderItemRepository.save(orderItem);
+            for (CartItem item : cartItems) {
+                OrderItem orderItem = new OrderItem();
 
-				orderItems.add(createdOrderItem);
-			}
+                orderItem.setOrder(savedOrder);
+                orderItem.setMrpPrice(item.getMrpPrice());
+                orderItem.setProduct(item.getProduct());
+                orderItem.setQuantity(item.getQuantity());
+                orderItem.setYear(item.getYear());;
+                orderItem.setUserId(item.getUserId());
+                orderItem.setSellingPrice(item.getSellingPrice());
 
-		}
-		
-		return orders;
-	}
+                savedOrder.getOrderItems().add(orderItem);
 
-	@Override
-	public Order findOrderById(Long orderId) throws OrderException {
-		
-		Optional<Order> opt=orderRepository.findById(orderId);
-		
-		if(opt.isPresent()) {
-			return opt.get();
-		}
-		throw new OrderException("order not exist with id "+orderId);
-	}
+                OrderItem createdOrderItem = orderItemRepository.save(orderItem);
 
-	@Override
-	public List<Order> usersOrderHistory(Long userId) {
-		return orderRepository.findByUserId(userId);
-	}
+                orderItems.add(createdOrderItem);
+            }
 
-	@Override
-	public List<Order> getShopsOrders(Long sellerId) {
-		return orderRepository.findBySellerIdOrderByOrderDateDesc(sellerId);
-	}
+        }
 
-	@Override
-	public Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws OrderException {
-		Order order=findOrderById(orderId);
-		order.setOrderStatus(orderStatus);
-		return orderRepository.save(order);
-	}
+        return orders;
+    }
 
-	@Override
-	public void deleteOrder(Long orderId) throws OrderException {
+    @Override
+    public Order findOrderById(Long orderId) throws OrderException {
 
-		Order order = findOrderById(orderId);
-		orderRepository.deleteById(orderId);
-		
-	}
+        Optional<Order> opt = orderRepository.findById(orderId);
 
-	@Override
-	public Order cancelOrder(Long orderId, User user) throws OrderException {
-		
-		Order order=this.findOrderById(orderId);
-		if(user.getId()!=order.getUser().getId()){
-			throw new OrderException("you can't perform this action "+orderId);
-		}
-		order.setOrderStatus(OrderStatus.CANCELLED);
+        if (opt.isPresent()) {
+            return opt.get();
+        }
+        throw new OrderException("order not exist with id " + orderId);
+    }
 
-		return orderRepository.save(order);
-	}
+    @Override
+    public List<Order> usersOrderHistory(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Order> getShopsOrders(Long sellerId) {
+        return orderRepository.findBySellerIdOrderByOrderDateDesc(sellerId);
+    }
+
+    @Override
+    public Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws OrderException {
+        Order order = findOrderById(orderId);
+        order.setOrderStatus(orderStatus);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) throws OrderException {
+
+        Order order = findOrderById(orderId);
+        orderRepository.deleteById(orderId);
+
+    }
+
+    @Override
+    public Order cancelOrder(Long orderId, User user) throws OrderException {
+
+        Order order = this.findOrderById(orderId);
+        if (user.getId() != order.getUser().getId()) {
+            throw new OrderException("you can't perform this action " + orderId);
+        }
+        order.setOrderStatus(OrderStatus.CANCELLED);
+
+        return orderRepository.save(order);
+    }
 
 }

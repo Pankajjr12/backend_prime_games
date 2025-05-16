@@ -21,16 +21,20 @@ import com.kumar.gamesstore.responses.ApiResponse;
 import com.kumar.gamesstore.services.OrderService;
 import com.kumar.gamesstore.services.SellerService;
 
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/seller/orders")
-@RequiredArgsConstructor
+
 public class SellerOrderController {
 	
 	  private final OrderService orderService;
 
 	  private final SellerService sellerService;
+
+	  public SellerOrderController(OrderService orderService, SellerService sellerService) {
+        this.orderService = orderService;
+        this.sellerService = sellerService;
+    }
 	  
 	  
 	  @GetMapping()
