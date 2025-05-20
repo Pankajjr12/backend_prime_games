@@ -2,8 +2,6 @@ package com.kumar.gamesstore.serviceImpl;
 
 import java.util.List;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.kumar.gamesstore.modals.HomeCategory;
@@ -20,13 +18,11 @@ public class HomeCategoryImpl implements HomeCategoryService {
     }
 
     @Override
-    @CacheEvict(value = "homeCategories", allEntries = true)
     public HomeCategory createCategory(HomeCategory category) {
         return homeCategoryRepository.save(category);
     }
 
     @Override
-    @CacheEvict(value = "homeCategories", allEntries = true)
     public List<HomeCategory> createCategories(List<HomeCategory> categories) {
         if (homeCategoryRepository.findAll().isEmpty()) {
             return homeCategoryRepository.saveAll(categories);
@@ -35,13 +31,11 @@ public class HomeCategoryImpl implements HomeCategoryService {
     }
 
     @Override
-    @Cacheable(value = "homeCategories")
     public List<HomeCategory> getAllCategories() {
         return homeCategoryRepository.findAll();
     }
 
     @Override
-    @CacheEvict(value = "homeCategories", allEntries = true)
     public HomeCategory updateCategory(HomeCategory category, Long id) throws Exception {
 
         HomeCategory existingCategory = homeCategoryRepository.findById(id)
