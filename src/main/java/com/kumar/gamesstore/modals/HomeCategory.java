@@ -1,5 +1,7 @@
 package com.kumar.gamesstore.modals;
 
+import java.io.Serializable;
+
 import com.kumar.gamesstore.domain.HomeCategorySection;
 
 import jakarta.persistence.Entity;
@@ -8,7 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class HomeCategory {
+public class HomeCategory implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

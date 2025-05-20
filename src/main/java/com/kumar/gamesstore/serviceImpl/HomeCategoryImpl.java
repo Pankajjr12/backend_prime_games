@@ -2,6 +2,7 @@ package com.kumar.gamesstore.serviceImpl;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.kumar.gamesstore.modals.HomeCategory;
@@ -30,6 +31,7 @@ public class HomeCategoryImpl implements HomeCategoryService {
         return homeCategoryRepository.findAll();
     }
 
+    @Cacheable("homeCategories")
     @Override
     public List<HomeCategory> getAllCategories() {
         return homeCategoryRepository.findAll();

@@ -127,10 +127,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductException("product not found"));
     }
 
-    @Cacheable(
-            value = "allProducts",
-            key = "T(java.util.Objects).hash(#category, #brand, #platform, #years, #minPrice, #maxPrice, #minDiscount, #sort, #stock, #pageNumber)"
-    )
+    @Cacheable(value = "allProducts")
     @Override
     public Page<Product> getAllProducts(String category, String brand, String platform, String years, Integer minPrice, Integer maxPrice,
             Integer minDiscount, String sort, String stock, Integer pageNumber) {

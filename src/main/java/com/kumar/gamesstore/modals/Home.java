@@ -1,8 +1,11 @@
 package com.kumar.gamesstore.modals;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Home {
+public class Home implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<HomeCategory> grid;
     private List<HomeCategory> shopByCategories;
