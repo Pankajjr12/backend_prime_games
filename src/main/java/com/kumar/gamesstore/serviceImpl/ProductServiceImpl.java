@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -103,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @CacheEvict(value = "products", allEntries = true)
+    // @CacheEvict(value = "products", allEntries = true)
     public void deleteProduct(Long productId) throws ProductException {
         // TODO Auto-generated method stub
         Product product = findProductById(productId);
@@ -111,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @CacheEvict(value = "products", allEntries = true)
+    // @CacheEvict(value = "products", allEntries = true)
     public Product updateProduct(Long productId, Product product) {
         // TODO Auto-generated method stub
         productRepository.findById(productId);
@@ -119,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    @Cacheable(value = "products", key = "#productId")
+    // @Cacheable(value = "products", key = "#productId")
     @Override
     public Product findProductById(Long productId) throws ProductException {
         // TODO Auto-generated method stub
@@ -127,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductException("product not found"));
     }
 
-    @Cacheable(value = "allProducts")
+    // @Cacheable(value = "allProducts")
     @Override
     public Page<Product> getAllProducts(String category, String brand, String platform, String years, Integer minPrice, Integer maxPrice,
             Integer minDiscount, String sort, String stock, Integer pageNumber) {
@@ -202,7 +201,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findBySellerId(sellerId);
     }
 
-    @Cacheable(value = "searchProducts", key = "#query", unless = "#query == null || #query.isEmpty()")
+    // @Cacheable(value = "searchProducts", key = "#query", unless = "#query == null || #query.isEmpty()")
     @Override
     public List<Product> searchProduct(String query) {
 
