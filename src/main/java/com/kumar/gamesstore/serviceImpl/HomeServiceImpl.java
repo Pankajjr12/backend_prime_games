@@ -80,8 +80,8 @@ public class HomeServiceImpl implements HomeService {
         return home;
     }
 
-    @Cacheable(value = "homepage", unless = "#result == null")
     @Override
+    @Cacheable(value = "homepage", unless = "#result == null")
     public Home getHomePageData() {
         List<HomeCategory> allCategories = homeCategoryRepository.findAll();
 
