@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.kumar.gamesstore.domain.HomeCategorySection;
@@ -81,7 +80,6 @@ public class HomeServiceImpl implements HomeService {
     }
 
     @Override
-    @Cacheable(value = "homepage", unless = "#result == null")
     public Home getHomePageData() {
         List<HomeCategory> allCategories = homeCategoryRepository.findAll();
 

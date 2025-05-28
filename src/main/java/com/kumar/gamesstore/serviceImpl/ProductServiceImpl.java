@@ -37,7 +37,6 @@ public class ProductServiceImpl implements ProductService {
         this.categoryRepository = categoryRepository;
     }
 
-    @CacheEvict(value = {"products", "allProducts", "searchProducts"}, allEntries = true)
     @Override
     public Product createProduct(CreateProductRequest req, Seller seller) {
         // TODO Auto-generated method stub
