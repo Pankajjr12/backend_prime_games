@@ -1,0 +1,17 @@
+****************************Config***************************************************
+
+SecurityFilterChain => Sets up access rules + JWT filter
+
+CorsConfiguration => Allows frontend apps to safely call backend APIs 
+
+PasswordEncoder => To secure user passwords before storing them in the database.
+
+RestTemplate => Creates a bean to call external REST APIs from this backend.
+
+
+***************************JWT Provider********************************************
+
+generateToken()	               Creates a JWT with email + expiry
+getEmailFromJwtToken()	       Extracts email from the JWT
+populateAuthorities()	       Converts roles to comma string
+key	                           Secret key used to sign/verify JWT

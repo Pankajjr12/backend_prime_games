@@ -1,6 +1,7 @@
 package com.kumar.gamesstore.modals;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,20 +23,14 @@ public class CartItem {
     private Product product;
 
     private String year;
-
     private int quantity = 1;
-
     private Integer mrpPrice;
-
     private Integer sellingPrice;
-
     private Long userId;
 
-    // No-arg constructor
     public CartItem() {
     }
 
-    // All-arg constructor
     public CartItem(Long id, Cart cart, Product product, String year, int quantity, Integer mrpPrice, Integer sellingPrice, Long userId) {
         this.id = id;
         this.cart = cart;
@@ -47,7 +42,6 @@ public class CartItem {
         this.userId = userId;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -112,7 +106,6 @@ public class CartItem {
         this.userId = userId;
     }
 
-    // toString
     @Override
     public String toString() {
         return "CartItem{"
@@ -127,7 +120,6 @@ public class CartItem {
                 + '}';
     }
 
-    // equals
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -136,44 +128,12 @@ public class CartItem {
         if (!(o instanceof CartItem)) {
             return false;
         }
-
-        CartItem cartItem = (CartItem) o;
-
-        if (quantity != cartItem.quantity) {
-            return false;
-        }
-        if (id != null ? !id.equals(cartItem.id) : cartItem.id != null) {
-            return false;
-        }
-        if (cart != null ? !cart.equals(cartItem.cart) : cartItem.cart != null) {
-            return false;
-        }
-        if (product != null ? !product.equals(cartItem.product) : cartItem.product != null) {
-            return false;
-        }
-        if (year != null ? !year.equals(cartItem.year) : cartItem.year != null) {
-            return false;
-        }
-        if (mrpPrice != null ? !mrpPrice.equals(cartItem.mrpPrice) : cartItem.mrpPrice != null) {
-            return false;
-        }
-        if (sellingPrice != null ? !sellingPrice.equals(cartItem.sellingPrice) : cartItem.sellingPrice != null) {
-            return false;
-        }
-        return userId != null ? userId.equals(cartItem.userId) : cartItem.userId == null;
+        CartItem that = (CartItem) o;
+        return id != null && id.equals(that.id);
     }
 
-    // hashCode
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (cart != null ? cart.hashCode() : 0);
-        result = 31 * result + (product != null ? product.hashCode() : 0);
-        result = 31 * result + (year != null ? year.hashCode() : 0);
-        result = 31 * result + quantity;
-        result = 31 * result + (mrpPrice != null ? mrpPrice.hashCode() : 0);
-        result = 31 * result + (sellingPrice != null ? sellingPrice.hashCode() : 0);
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }
