@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.kumar.gamesstore.domain.HomeCategorySection;
@@ -26,6 +27,7 @@ public class HomeServiceImpl implements HomeService {
         this.homeCategoryRepository = homeCategoryRepository;
     }
 
+    @CacheEvict(value = "homePage", allEntries = true)
     @Override
     public Home creatHomePageData(List<HomeCategory> allCategories) {
         // Log the incoming categories
