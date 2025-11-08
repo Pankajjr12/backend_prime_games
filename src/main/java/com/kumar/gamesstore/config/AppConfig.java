@@ -21,34 +21,35 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class AppConfig {
 
-    // Security filter chain with CORS and JWT token validation
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeRequests(auth -> auth
-                .requestMatchers("/api/**").authenticated() // All API endpoints need authentication
-                .requestMatchers("/api/products/*/reviews").permitAll() // Public reviews
-                .anyRequest().permitAll() // Allow other requests (can be adjusted as per your needs)
+
+        http
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/products/*/reviews").permitAll() // Public first
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class) // JWT Token filter
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless applications
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // Apply custom CORS configuration
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Custom CORS configuration
-    private CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    // Cache CORS config (better performance)
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000"));  // Allowed frontend URLs
-        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods
-        cfg.setAllowCredentials(true);  // Allow credentials (cookies, Authorization headers)
-        cfg.setAllowedHeaders(Collections.singletonList("*"));  // Allow all headers
-        cfg.setExposedHeaders(Arrays.asList("Authorization"));  // Expose Authorization header
-        cfg.setMaxAge(3600L);  // Cache pre-flight response for 1 hour
-        // Register the CORS configuration for all paths
+        cfg.setAllowedOrigins(Arrays.asList("https://frontend-prime-games.vercel.app", "http://localhost:3000", "https://pankaj2024.imgbb.com"));
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        cfg.setAllowedHeaders(Collections.singletonList("*"));
+        cfg.setExposedHeaders(Arrays.asList("Authorization"));
+        cfg.setAllowCredentials(true);
+        cfg.setMaxAge(86400L); // Cache for 24 hours (↑ from 1 hour)
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }

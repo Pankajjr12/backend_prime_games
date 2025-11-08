@@ -32,9 +32,6 @@ import com.kumar.gamesstore.modals.SellerReport;
 import com.kumar.gamesstore.modals.VerificationCode;
 import com.kumar.gamesstore.repositories.SellerRepository;
 import com.kumar.gamesstore.repositories.VerificationRepository;
-import com.kumar.gamesstore.requests.LoginOtpRequest;
-import com.kumar.gamesstore.requests.LoginRequest;
-import com.kumar.gamesstore.requests.SignUpRequest;
 import com.kumar.gamesstore.responses.ApiResponse;
 import com.kumar.gamesstore.responses.AuthResponse;
 import com.kumar.gamesstore.serviceImpl.CustomUserServiceImpl;
@@ -45,21 +42,18 @@ import com.kumar.gamesstore.services.SellerService;
 import com.kumar.gamesstore.services.VerificationService;
 import com.kumar.gamesstore.utils.OtpUtils;
 
-
-
 @RestController
 
 @RequestMapping("/sellers")
 public class SellerController {
 
-    private final AuthService authService;
     private final SellerService sellerService;
     private final VerificationService verificationService;
     private final EmailService emailService;
     private final JwtProvider jwtProvider;
     private final CustomUserServiceImpl customeUserServiceImplementation;
     private final VerificationRepository verificationRepository;
-    private final SellerRepository sellerRepository;
+
     private SellerReportService sellerReportService;
 
     // ✅ Constructor for dependency injection
@@ -73,30 +67,59 @@ public class SellerController {
             CustomUserServiceImpl customeUserServiceImplementation,
             VerificationRepository verificationRepository,
             SellerRepository sellerRepository) {
-        this.authService = authService;
+
         this.sellerService = sellerService;
         this.verificationService = verificationService;
         this.emailService = emailService;
         this.jwtProvider = jwtProvider;
         this.customeUserServiceImplementation = customeUserServiceImplementation;
         this.verificationRepository = verificationRepository;
-        this.sellerRepository = sellerRepository;
     }
 
     @PostMapping("/sent/login-top")
-    public ResponseEntity<ApiResponse> sentLoginOtp(@RequestBody VerificationCode req) throws Exception {
+    public ResponseEntity<ApiResponse> sendLoginOtp(@RequestBody VerificationCode req) throws Exception {
+        // Fetch seller by email
         Seller seller = sellerService.getSellerByEmail(req.getEmail());
 
+        // Generate OTP
         String otp = OtpUtils.generateOtp();
+
+        // Save OTP in verification table
         VerificationCode verificationCode = verificationService.createVerificationCode(otp, req.getEmail());
 
-        String subject = "Prime Game Store";
-        String text = "your login otp is - ";
-        text += "otp=" + otp;
+        // Email details
+        String subject = "Your Login OTP – Panku Game Store";
+
+        String text = """
+                <html>
+                <body style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p>Hi <strong>%s</strong>,</p>
+                    
+                    <p>Your One-Time Password (OTP) to log in to your <strong>Panku Game Store</strong> account is:</p>
+                    
+                    <p style="font-size: 18px; font-weight: bold; background: #f3f3f3; padding: 10px; border-radius: 6px; display: inline-block;">
+                        🔐 %s
+                    </p>
+                    
+                    <p style="margin-top: 15px;">
+                        Please <strong>do not share</strong> this OTP with anyone for security reasons.<br>
+                        This OTP will expire shortly.
+                    </p>
+                    
+                    <br>
+                    <p>Regards,<br>
+                    <strong>Panku Game Store Team</strong></p>
+                </body>
+                </html>
+                """.formatted(seller.getSellerName(), otp);
+
+        // Send email
         emailService.sendVerificationOtpEmail(req.getEmail(), verificationCode.getOtp(), subject, text, true);
 
+        // Prepare API response
         ApiResponse res = new ApiResponse();
-        res.setMessage("otp sent");
+        res.setMessage("OTP sent successfully to " + req.getEmail());
+
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
