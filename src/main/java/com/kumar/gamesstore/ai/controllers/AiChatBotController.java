@@ -19,7 +19,6 @@ import com.kumar.gamesstore.services.UserService;
 public class AiChatBotController {
 
     private final AiChatbotService aiChatBotService;
-
     private final UserService userService;
 
     public AiChatBotController(AiChatbotService aiChatBotService, UserService userService) {
@@ -34,24 +33,33 @@ public class AiChatBotController {
             @RequestParam(required = false) Long productId,
             @RequestHeader(required = false, name = "Authorization") String jwt) throws Exception {
 
+        ApiResponse apiResponse = new ApiResponse();
+
+        // Step 1: Check if user is authenticated
+        if (jwt == null && userId == null) {
+            apiResponse.setMessage("Please login or signup first to chat with me.");
+            return ResponseEntity.ok(apiResponse);
+        }
+
+        // Step 2: Get userId from JWT if provided
+        if (jwt != null && userId == null) {
+            User user = userService.findUserByJwtToken(jwt);
+            if (user == null) {
+                apiResponse.setMessage("Invalid token. Please login again.");
+                return ResponseEntity.ok(apiResponse);
+            }
+            userId = user.getId();
+        }
+
+        // Step 3: Prepare prompt for AI
         String message = prompt.getPrompt();
         if (productId != null) {
-            message = "the product id is " + productId + ", " + message;
+            message = "The product id is " + productId + ", " + message;
         }
 
-        User user = new User();
-        if (jwt != null) {
-            user = userService.findUserByJwtToken(jwt);
-        }
-
-//        Long userId;
-//        if(user!=null){
-//            userId=user.getId();
-//        }
-        ApiResponse apiResponse = aiChatBotService.aiChatBot(message, productId, user.getId());
+        // Step 4: Call AI service
+        apiResponse = aiChatBotService.aiChatBot(message, productId, userId);
 
         return ResponseEntity.ok(apiResponse);
-
     }
-
 }

@@ -18,33 +18,35 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtProvider {
 
-    private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
+    private final SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
 
     public String generateToken(Authentication auth) {
-
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 86400000))
+                .setExpiration(new Date(new Date().getTime() + 86400000)) // 1 day
                 .claim("email", auth.getName())
                 .signWith(key)
                 .compact();
-
-        return jwt;
     }
 
     public String getEmailFromJwtToken(String jwt) {
-        jwt = jwt.substring(7);
+        // Remove "Bearer " prefix only if present
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
+        }
 
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-        String email = String.valueOf(claims.get("email"));
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
 
-        return email;
+        return String.valueOf(claims.get("email"));
     }
 
-    public String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
+    public String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Set<String> auths = new HashSet<>();
-
-        for (GrantedAuthority authority : collection) {
+        for (GrantedAuthority authority : authorities) {
             auths.add(authority.getAuthority());
         }
         return String.join(",", auths);
